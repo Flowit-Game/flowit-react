@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "./page.module.css";
-import Square from "@/components/square";
+import {Square, Color} from "@/components/Square/Square";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,7 +34,9 @@ export default function Home() {
       <table>
         <tbody>
           <tr>
-            <Square />
+            <Square color={ Color.red } />
+            <Square color={ Color.green } />
+            <Square color={ Color.blue } />
           </tr>
         </tbody>
       </table>
