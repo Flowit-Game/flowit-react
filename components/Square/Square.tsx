@@ -30,6 +30,8 @@ export function Square(props: SquareProps) {
       className={styles.square}
       style={{ backgroundColor: props.color, borderColor: props.targetColor }}
       onClick={props.onClick}
-    />
+    >
+    {(props.modifier === Modifier.right ? ">" : "&")}
+    </button>
   );
 }
