@@ -8,11 +8,15 @@ export enum Color {
 }
 
 type SquareProps = {
-  color: string;
+  color: Color;
+  targetColor: Color;
 };
 
 export function Square(props: SquareProps) {
   return (
-    <td className={styles.square} style={{ backgroundColor: props.color }}></td>
+    <td
+      className={styles.square}
+      style={{ backgroundColor: props.color, borderColor: props.targetColor }}
+    ></td>
   );
 }
