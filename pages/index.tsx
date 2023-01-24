@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Inter } from "@next/font/google";
-import styles from "./page.module.css";
+import styles from "./index.module.css";
 import {Square, Color} from "@/components/Square/Square";
 
 const inter = Inter({ subsets: ["latin"] });
