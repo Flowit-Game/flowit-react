@@ -50,8 +50,9 @@ export default function Home() {
   function updateGame(x: number, y: number) {
     if (game[x][y].props.modifier === Modifier.right) {
       let i = y + 1;
+      const newGameState = [...game];
       while (game[x][i].props.color === Color.white) {
-        game[x][i] = (
+        newGameState[x][i] = (
           <Square
             color={Color.red}
             targetColor={Color.red}
@@ -59,9 +60,7 @@ export default function Home() {
             onClick={() => updateGame(x, i)}
           />
         );
-        // Not working, this doesn't trigger a render
-        // but committing what I've got because I'm going to bed.
-        setGame(game);
+        setGame(newGameState);
         i++;
       }
     }
