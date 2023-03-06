@@ -4,6 +4,7 @@ import styles from "./Square.module.css";
 export enum Color {
   red = "#FF0000",
   green = "#00FF00",
+  yellow = "#FFFF00",
   blue = "#0000FF",
   white = "#FFFFFF",
   none = "#00000000", // rgba transparent
@@ -21,7 +22,7 @@ type SquareProps = {
   color: Color;
   targetColor: Color;
   modifier: Modifier;
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
 };
 
 export function Square(props: SquareProps) {
@@ -31,7 +32,7 @@ export function Square(props: SquareProps) {
       style={{ backgroundColor: props.color, borderColor: props.targetColor }}
       onClick={props.onClick}
     >
-    {(props.modifier === Modifier.right ? ">" : "&")}
+    {(props.modifier)}
     </button>
   );
 }
