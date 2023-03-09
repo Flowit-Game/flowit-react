@@ -1,0 +1,14 @@
+.header {
+    height: 100px;
+    width: 100%;
+    background-color: darkgray;
+}
+.level {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6rem;
+    min-height: 100vh;
+    background-color: #d8d8d8;
+  }

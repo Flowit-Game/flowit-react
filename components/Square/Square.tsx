@@ -22,6 +22,8 @@ type SquareProps = {
   color: Color;
   targetColor: Color;
   modifier: Modifier;
+  x?: number;
+  y?: number;
   onClick?: MouseEventHandler;
 };
 
@@ -32,7 +34,7 @@ export function Square(props: SquareProps) {
       style={{ backgroundColor: props.color, borderColor: props.targetColor }}
       onClick={props.onClick}
     >
-    {(props.modifier)}
+    {`${props.modifier} ${props.x} ${props.y}`}
     </button>
   );
 }
