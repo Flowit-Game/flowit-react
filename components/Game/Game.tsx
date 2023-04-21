@@ -23,6 +23,7 @@ export function Game(props: GameProps) {
         levelState[x].push(
           <Square
             {...square.props}
+            key={`x${x}y${y}`}
             x={x}
             y={y}
             onClick={() => updateGame(x, y)}
@@ -96,8 +97,8 @@ export function Game(props: GameProps) {
       <div className={styles.header}>Current: {moves} Best: todo</div>
       <div className={styles.level}>
         <div>
-          {game.map((row) => (
-            <div>{row}</div>
+          {game.map((row, index) => (
+            <div key={index}>{row}</div>
           ))}
         </div>
       </div>

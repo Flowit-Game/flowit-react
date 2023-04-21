@@ -19,6 +19,7 @@ export enum Modifier {
 }
 
 type SquareProps = {
+  key?: string;
   color: Color;
   targetColor: Color;
   modifier: Modifier;
