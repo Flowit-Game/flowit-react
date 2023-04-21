@@ -11,6 +11,7 @@ type GameProps = {
 export function Game(props: GameProps) {
   const [moves, setMoves] = useState(0);
   const [game, setGame] = useState(loadLevel(props.level));
+  const [gameIsWon, setGameIsWon] = useState(false)
 
   function loadLevel(props: Level) {
     // This would load an xml file, would probably have to loop twice
@@ -32,6 +33,18 @@ export function Game(props: GameProps) {
       }
     }
     return levelState;
+  }
+
+  function checkGameIsWon() {
+    let won = true;
+    game.forEach((row) => {
+      row.forEach((square) => {
+        if( square.props.color !== square.props.targetColor) {
+          won = false;
+        }
+      });
+    });
+    setGameIsWon(won)
   }
 
   function getNextSquare(x: number, y: number, direction: Modifier) {
@@ -89,11 +102,13 @@ export function Game(props: GameProps) {
       } catch (error) {
         console.error(`${error} ${nextSquare}`);
       }
+      checkGameIsWon()
     }
   }
 
   return (
     <>
+      {gameIsWon ? <div>WON!!!</div> : null}
       <div className={styles.header}>Current: {moves} Best: todo</div>
       <div className={styles.level}>
         <div>

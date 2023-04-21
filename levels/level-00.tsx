@@ -2,7 +2,6 @@
 // later we will load all the levels by parsing the xml.
 import { Color, Modifier, Square } from "@/components/Square/Square";
 
-
 export const level = [
   [
     <Square
