@@ -11,7 +11,7 @@ type GameProps = {
 export function Game(props: GameProps) {
   const [moves, setMoves] = useState(0);
   const [game, setGame] = useState(loadLevel(props.level));
-  const [gameIsWon, setGameIsWon] = useState(false)
+  const [gameIsWon, setGameIsWon] = useState(false);
 
   function loadLevel(props: Level) {
     // This would load an xml file, would probably have to loop twice
@@ -39,12 +39,12 @@ export function Game(props: GameProps) {
     let won = true;
     game.forEach((row) => {
       row.forEach((square) => {
-        if( square.props.color !== square.props.targetColor) {
+        if (square.props.color !== square.props.targetColor) {
           won = false;
         }
       });
     });
-    setGameIsWon(won)
+    setGameIsWon(won);
   }
 
   function getNextSquare(x: number, y: number, direction: Modifier) {
@@ -67,8 +67,6 @@ export function Game(props: GameProps) {
   }
 
   function updateGame(x: number, y: number) {
-    // Problems:
-    // * Remove color when clicked a second time.
     if (
       game[x][y].props.modifier === Modifier.up ||
       game[x][y].props.modifier === Modifier.left ||
@@ -78,17 +76,21 @@ export function Game(props: GameProps) {
       setMoves((moves) => moves + 1);
       let nextSquare = getNextSquare(x, y, game[x][y].props.modifier);
       const newGameState = [...game];
-      const color = game[x][y].props.color;
+      const oldColor = nextSquare?.props.color;
+      const targetColor =
+        nextSquare?.props.color == game[x][y].props.color
+          ? Color.none
+          : game[x][y].props.color;
       try {
         while (
           nextSquare !== undefined &&
-          nextSquare?.props.color === Color.none &&
+          nextSquare?.props.color === oldColor &&
           nextSquare?.props.targetColor !== Color.none
         ) {
           newGameState[nextSquare.props.x][nextSquare.props.y] = (
             <Square
               {...nextSquare.props}
-              color={color}
+              color={targetColor}
               modifier={Modifier.none}
             />
           );
@@ -102,7 +104,7 @@ export function Game(props: GameProps) {
       } catch (error) {
         console.error(`${error} ${nextSquare}`);
       }
-      checkGameIsWon()
+      checkGameIsWon();
     }
   }
 
