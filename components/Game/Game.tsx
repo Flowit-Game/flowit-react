@@ -39,8 +39,7 @@ export function Game(props: GameProps) {
     // * Fills in cells that are meant to remain empty (i.e. targetColor is none)
     // * Need to handle all 4 directions in one statement
     // * Remove color when clicked a second time.
-    // * moves only increments once, why?
-    setMoves(moves + 1);
+    setMoves((moves) => moves + 1);
     if (game[x][y].props.modifier === Modifier.up) {
       let i = x - 1;
       const newGameState = [...game];
