@@ -33,32 +33,60 @@ export function Game(props: GameProps) {
     return levelState;
   }
 
+  function getNextSquare(x: number, y: number, direction: Modifier) {
+    let nextSquare = undefined;
+    try {
+      if (direction === Modifier.up) {
+        nextSquare = game[x - 1][y];
+      }
+      if (direction === Modifier.left) {
+        nextSquare = game[x][y - 1];
+      }
+      if (direction === Modifier.down) {
+        nextSquare = game[x + 1][y];
+      }
+      if (direction === Modifier.right) {
+        nextSquare = game[x][y + 1];
+      }
+    } catch (err) {}
+    return nextSquare;
+  }
+
   function updateGame(x: number, y: number) {
     // Problems:
-    // * Error when there is no next cell (i.e. edge of level).
-    // * Fills in cells that are meant to remain empty (i.e. targetColor is none)
-    // * Need to handle all 4 directions in one statement
     // * Remove color when clicked a second time.
-    setMoves((moves) => moves + 1);
-    if (game[x][y].props.modifier === Modifier.up) {
-      let i = x - 1;
+    if (
+      game[x][y].props.modifier === Modifier.up ||
+      game[x][y].props.modifier === Modifier.left ||
+      game[x][y].props.modifier === Modifier.down ||
+      game[x][y].props.modifier === Modifier.right
+    ) {
+      setMoves((moves) => moves + 1);
+      let nextSquare = getNextSquare(x, y, game[x][y].props.modifier);
       const newGameState = [...game];
       const color = game[x][y].props.color;
       try {
-        while (game[i][y].props.color === Color.none) {
-          newGameState[i][y] = (
+        while (
+          nextSquare !== undefined &&
+          nextSquare?.props.color === Color.none &&
+          nextSquare?.props.targetColor !== Color.none
+        ) {
+          newGameState[nextSquare.props.x][nextSquare.props.y] = (
             <Square
-              {...game[i][y].props}
+              {...nextSquare.props}
               color={color}
               modifier={Modifier.none}
-              onClick={() => updateGame(i, y)}
             />
           );
           setGame(newGameState);
-          i = i - 1;
+          nextSquare = getNextSquare(
+            nextSquare.props.x,
+            nextSquare.props.y,
+            game[x][y].props.modifier
+          );
         }
       } catch (error) {
-        console.error(`${error} ${x} ${i}`);
+        console.error(`${error} ${nextSquare}`);
       }
     }
   }
