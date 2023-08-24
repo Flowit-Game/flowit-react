@@ -2,20 +2,24 @@ import { MouseEventHandler } from "react";
 import styles from "./Square.module.css";
 
 export enum Color {
-  red = "#FF0000",
-  green = "#00FF00",
-  yellow = "#F0E000",
-  blue = "#0000FF",
-  white = "#FFFFFF",
+  red = "#f51518",
+  green = "#689f38",
+  blue = "#68a6e5",
+  yellow = "#f6ca18",
+  indigo = "#7d6a6c",
   none = "#00000000", // rgba transparent
 }
 
 export enum Modifier {
   none = "none",
-  left = "left",
   up = "up",
   right = "right",
   down = "down",
+  left = "left",
+  rotateUp = "rotate-up",
+  rotateRight = "rotate-right",
+  rotateDown = "rotate-down",
+  rotateLeft = "rotate-left",
   circle = "circle",
   bomb = "bomb"
 }

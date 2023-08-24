@@ -1,6 +1,6 @@
 import styles from "./index.module.css";
 import Head from "./head";
-import { level } from "@/levels/level-00";
+import { level } from "@/levels/test-level";
 import { Game } from "@/components/Game/Game";
 
 export default function Home() {
