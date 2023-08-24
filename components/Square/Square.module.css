@@ -6,3 +6,34 @@
     border-width: 5px;
     margin: 10px;
 }
+
+.modifier {
+    margin: auto;
+    height: 80%;
+    width: 80%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.up {
+    background-image: url('./images/arrow.svg');
+}
+.right {
+    background-image: url('./images/arrow.svg');
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+.down {
+    background-image: url('./images/arrow.svg');
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+.left {
+    background-image: url('./images/arrow.svg');
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+}
+.circle {
+    background-image: url('./images/circle.svg')
+}
+.none {
+}
