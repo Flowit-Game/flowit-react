@@ -129,13 +129,13 @@ export const level = [
     />,
     <Square
       color={Color.none}
-      targetColor={Color.none}
+      targetColor={Color.green}
       modifier={Modifier.none}
     />,
     <Square
       color={Color.green}
       targetColor={Color.green}
-      modifier={Modifier.up}
+      modifier={Modifier.rotateUp}
     />,
   ],
 ];

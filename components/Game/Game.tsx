@@ -1,5 +1,5 @@
-import { useState, ReactElement } from "react";
-import { Modifier, Color, Square } from "../Square/Square";
+import {ReactElement, useState} from "react";
+import {Color, Modifier, Square} from "../Square/Square";
 import styles from "./Game.module.css";
 
 type Level = Array<Array<ReactElement>>;
@@ -50,17 +50,17 @@ export function Game(props: GameProps) {
   function getNextSquare(x: number, y: number, direction: Modifier) {
     let nextSquare = undefined;
     try {
-      if (direction === Modifier.up) {
+      if (direction === Modifier.up || direction === Modifier.rotateUp) {
         nextSquare = game[x - 1][y];
       }
-      if (direction === Modifier.left) {
-        nextSquare = game[x][y - 1];
+      else if (direction === Modifier.right || direction === Modifier.rotateRight) {
+        nextSquare = game[x][y + 1];
       }
-      if (direction === Modifier.down) {
+      else if (direction === Modifier.down || direction === Modifier.rotateDown) {
         nextSquare = game[x + 1][y];
       }
-      if (direction === Modifier.right) {
-        nextSquare = game[x][y + 1];
+      else if (direction === Modifier.left || direction === Modifier.rotateLeft) {
+        nextSquare = game[x][y - 1];
       }
     } catch (err) {}
     return nextSquare;
@@ -69,23 +69,34 @@ export function Game(props: GameProps) {
   function updateGame(x: number, y: number) {
     if (
       game[x][y].props.modifier === Modifier.up ||
-      game[x][y].props.modifier === Modifier.left ||
+      game[x][y].props.modifier === Modifier.right ||
       game[x][y].props.modifier === Modifier.down ||
-      game[x][y].props.modifier === Modifier.right
+      game[x][y].props.modifier === Modifier.left ||
+      game[x][y].props.modifier === Modifier.rotateUp ||
+      game[x][y].props.modifier === Modifier.rotateRight ||
+      game[x][y].props.modifier === Modifier.rotateDown ||
+      game[x][y].props.modifier === Modifier.rotateLeft
     ) {
       setMoves((moves) => moves + 1);
       let nextSquare = getNextSquare(x, y, game[x][y].props.modifier);
       const newGameState = [...game];
-      const oldColor = nextSquare?.props.color;
+      const arrowColour = game[x][y].props.color;
       const targetColor =
         nextSquare?.props.color == game[x][y].props.color
           ? Color.none
           : game[x][y].props.color;
       try {
         while (
+          // The next square exists on the grid
           nextSquare !== undefined &&
-          nextSquare?.props.color === oldColor &&
-          nextSquare?.props.targetColor !== Color.none
+          // and it's not a blank space
+          nextSquare?.props.targetColor !== Color.none &&
+          // and it's not a modifier square
+          nextSquare?.props.modifier === Modifier.none &&
+          // and it's either empty, and we are adding colours
+          ((nextSquare?.props.color === Color.none && targetColor !== Color.none) ||
+          // or it's the arrow colour and we are removing colours
+          (nextSquare?.props.color === arrowColour && targetColor === Color.none))
         ) {
           newGameState[nextSquare.props.x][nextSquare.props.y] = (
             <Square
@@ -100,6 +111,48 @@ export function Game(props: GameProps) {
             nextSquare.props.y,
             game[x][y].props.modifier
           );
+        }
+        // If it was a rotating arrow, turn it
+        // TODO refactor this
+        if (game[x][y].props.modifier === Modifier.rotateUp)
+        {
+          newGameState[x][y] = (
+            <Square
+              {...newGameState[x][y].props}
+              modifier={Modifier.rotateRight}
+            />
+          );
+          setGame(newGameState)
+        }
+        else if (game[x][y].props.modifier === Modifier.rotateRight)
+        {
+          newGameState[x][y] = (
+            <Square
+              {...newGameState[x][y].props}
+              modifier={Modifier.rotateDown}
+            />
+          );
+          setGame(newGameState)
+        }
+        else if (game[x][y].props.modifier === Modifier.rotateDown)
+        {
+          newGameState[x][y] = (
+            <Square
+              {...newGameState[x][y].props}
+              modifier={Modifier.rotateLeft}
+            />
+          );
+          setGame(newGameState)
+        }
+        else if (game[x][y].props.modifier === Modifier.rotateLeft)
+        {
+          newGameState[x][y] = (
+            <Square
+              {...newGameState[x][y].props}
+              modifier={Modifier.rotateUp}
+            />
+          );
+          setGame(newGameState)
         }
       } catch (error) {
         console.error(`${error} ${nextSquare}`);
