@@ -1,5 +1,5 @@
-import {ReactElement, useState} from "react";
-import {Color, Modifier, Square} from "../Square/Square";
+import { ReactElement, useState } from "react";
+import { Color, Modifier, Square } from "../Square/Square";
 import styles from "./Game.module.css";
 
 type Level = Array<Array<ReactElement>>;
@@ -52,21 +52,32 @@ export function Game(props: GameProps) {
     try {
       if (direction === Modifier.up || direction === Modifier.rotateUp) {
         nextSquare = game[x - 1][y];
-      }
-      else if (direction === Modifier.right || direction === Modifier.rotateRight) {
+      } else if (
+        direction === Modifier.right ||
+        direction === Modifier.rotateRight
+      ) {
         nextSquare = game[x][y + 1];
-      }
-      else if (direction === Modifier.down || direction === Modifier.rotateDown) {
+      } else if (
+        direction === Modifier.down ||
+        direction === Modifier.rotateDown
+      ) {
         nextSquare = game[x + 1][y];
-      }
-      else if (direction === Modifier.left || direction === Modifier.rotateLeft) {
+      } else if (
+        direction === Modifier.left ||
+        direction === Modifier.rotateLeft
+      ) {
         nextSquare = game[x][y - 1];
+      } else if (direction === Modifier.none) {
+        nextSquare = game[x][y];
       }
     } catch (err) {}
     return nextSquare;
   }
 
   function updateGame(x: number, y: number) {
+    if (game[x][y].props.modifier !== Modifier.none) {
+      setMoves((moves) => moves + 1);
+    }
     if (
       game[x][y].props.modifier === Modifier.up ||
       game[x][y].props.modifier === Modifier.right ||
@@ -77,7 +88,6 @@ export function Game(props: GameProps) {
       game[x][y].props.modifier === Modifier.rotateDown ||
       game[x][y].props.modifier === Modifier.rotateLeft
     ) {
-      setMoves((moves) => moves + 1);
       let nextSquare = getNextSquare(x, y, game[x][y].props.modifier);
       const newGameState = [...game];
       const arrowColour = game[x][y].props.color;
@@ -94,9 +104,11 @@ export function Game(props: GameProps) {
           // and it's not a modifier square
           nextSquare?.props.modifier === Modifier.none &&
           // and it's either empty, and we are adding colours
-          ((nextSquare?.props.color === Color.none && targetColor !== Color.none) ||
-          // or it's the arrow colour and we are removing colours
-          (nextSquare?.props.color === arrowColour && targetColor === Color.none))
+          ((nextSquare?.props.color === Color.none &&
+            targetColor !== Color.none) ||
+            // or it's the arrow colour and we are removing colours
+            (nextSquare?.props.color === arrowColour &&
+              targetColor === Color.none))
         ) {
           newGameState[nextSquare.props.x][nextSquare.props.y] = (
             <Square
@@ -114,61 +126,89 @@ export function Game(props: GameProps) {
         }
         // If it was a rotating arrow, turn it
         // TODO refactor this
-        if (game[x][y].props.modifier === Modifier.rotateUp)
-        {
+        if (game[x][y].props.modifier === Modifier.rotateUp) {
           newGameState[x][y] = (
             <Square
               {...newGameState[x][y].props}
               modifier={Modifier.rotateRight}
             />
           );
-          setGame(newGameState)
-        }
-        else if (game[x][y].props.modifier === Modifier.rotateRight)
-        {
+          setGame(newGameState);
+        } else if (game[x][y].props.modifier === Modifier.rotateRight) {
           newGameState[x][y] = (
             <Square
               {...newGameState[x][y].props}
               modifier={Modifier.rotateDown}
             />
           );
-          setGame(newGameState)
-        }
-        else if (game[x][y].props.modifier === Modifier.rotateDown)
-        {
+          setGame(newGameState);
+        } else if (game[x][y].props.modifier === Modifier.rotateDown) {
           newGameState[x][y] = (
             <Square
               {...newGameState[x][y].props}
               modifier={Modifier.rotateLeft}
             />
           );
-          setGame(newGameState)
-        }
-        else if (game[x][y].props.modifier === Modifier.rotateLeft)
-        {
+          setGame(newGameState);
+        } else if (game[x][y].props.modifier === Modifier.rotateLeft) {
           newGameState[x][y] = (
             <Square
               {...newGameState[x][y].props}
               modifier={Modifier.rotateUp}
             />
           );
-          setGame(newGameState)
+          setGame(newGameState);
         }
       } catch (error) {
         console.error(`${error} ${nextSquare}`);
       }
-      checkGameIsWon();
+    } else if (game[x][y].props.modifier === Modifier.bomb) {
+      const squaresToUpdate = [
+        // Top row
+        getNextSquare(x - 1, y - 1, Modifier.none),
+        getNextSquare(x - 1, y, Modifier.none),
+        getNextSquare(x - 1, y + 1, Modifier.none),
+        // Middle row
+        getNextSquare(x, y - 1, Modifier.none),
+        getNextSquare(x, y, Modifier.none),
+        getNextSquare(x, y + 1, Modifier.none),
+        // Bottom row
+        getNextSquare(x + 1, y - 1, Modifier.none),
+        getNextSquare(x + 1, y, Modifier.none),
+        getNextSquare(x + 1, y + 1, Modifier.none),
+      ];
+      const newGameState = [...game];
+      const targetColor = game[x][y].props.color;
+      try {
+        squaresToUpdate.forEach((square) => {
+          if (square !== undefined && square.props.targetColor !== Color.none) {
+            newGameState[square.props.x][square.props.y] = (
+              <Square
+                {...newGameState[square.props.x][square.props.y].props}
+                modifier={Modifier.none}
+                color={targetColor}
+              />
+            );
+            setGame(newGameState);
+          }
+        });
+      } catch (error) {
+        console.error(`${error}`);
+      }
+    } else if (game[x][y].props.modifier === Modifier.circle) {
+      // TODO implement breadth first search to flood fill
     }
+    // Finally
+    checkGameIsWon();
   }
-
   return (
     <>
       {gameIsWon ? <div>WON!!!</div> : null}
       <div className={styles.header}>Current: {moves} Best: todo</div>
       <div className={styles.level}>
-        <div>
+        <div className={styles.gameBoard}>
           {game.map((row, index) => (
-            <div key={index}>{row}</div>
+            <div key={index} className={styles.row}>{row}</div>
           ))}
         </div>
       </div>

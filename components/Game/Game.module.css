@@ -8,7 +8,15 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 6rem;
+    padding: 2rem;
     min-height: 100vh;
     background-color: #d8d8d8;
   }
+.gameBoard {
+    width: 100%;
+    max-width: 1000px;
+}
+.row {
+    display: flex;
+    width: 100%;
+}
