@@ -8,8 +8,11 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 2rem;
-    min-height: 100vh;
+    padding-top: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    /* Remove header, and padding*/
+    min-height: calc(100vh - 100px - 2rem);
     background-color: #d8d8d8;
   }
 .gameBoard {

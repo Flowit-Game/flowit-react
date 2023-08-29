@@ -1,11 +1,16 @@
-import { ReactElement, useState } from "react";
-import { Color, Modifier, Square } from "../Square/Square";
+import {ReactElement, useState} from "react";
+import {Color, Modifier, Square} from "../Square/Square";
 import styles from "./Game.module.css";
 
 type Level = Array<Array<ReactElement>>;
 
 type GameProps = {
   level: Level;
+};
+
+type Coordinate = {
+  x: number;
+  y: number;
 };
 
 export function Game(props: GameProps) {
@@ -33,6 +38,20 @@ export function Game(props: GameProps) {
       }
     }
     return levelState;
+  }
+
+  function reset() {
+    // TODO This doesn't work... but WHY!?!
+    setGame(() => [...loadLevel(props.level)]);
+    setMoves(() => 0);
+  }
+
+  function includesCoordinate(
+    elements: Array<Coordinate>,
+    x: number,
+    y: number
+  ) {
+    return elements.some((element) => element.x === x && element.y === y);
   }
 
   function checkGameIsWon() {
@@ -196,7 +215,52 @@ export function Game(props: GameProps) {
         console.error(`${error}`);
       }
     } else if (game[x][y].props.modifier === Modifier.circle) {
-      // TODO implement breadth first search to flood fill
+      const newGameState = [...game];
+      const queue: Array<Coordinate> = [{ x: x, y: y }];
+      const visited: Array<Coordinate> = [];
+      // If any neighbour is empty, but has a target colour
+      const fill = (
+        (getNextSquare(x,y,Modifier.up)?.props?.color === Color.none &&
+        getNextSquare(x,y,Modifier.up)?.props?.targetColor !== Color.none) ||
+        (getNextSquare(x,y,Modifier.right)?.props?.color === Color.none &&
+        getNextSquare(x,y,Modifier.right)?.props?.targetColor !== Color.none) ||
+        (getNextSquare(x,y,Modifier.down)?.props?.color === Color.none &&
+        getNextSquare(x,y,Modifier.down)?.props?.targetColor !== Color.none) ||
+        (getNextSquare(x,y,Modifier.left)?.props?.color === Color.none &&
+        getNextSquare(x,y,Modifier.left)?.props?.targetColor !== Color.none)
+      )
+      const targetColor = fill ? game[x][y].props.color : Color.none;
+      const replaceColour = fill ? Color.none : game[x][y].props.color;
+      while (queue.length) {
+        // TODO fix typescript... https://stackoverflow.com/q/65514481
+        const current = queue.pop() || {x: -1, y: -1};
+        // Check the 4 neighbour and add them to the queue
+        [Modifier.up, Modifier.right, Modifier.down, Modifier.left].forEach(
+          (neighbour) => {
+            const nextSquare = getNextSquare(current.x, current.y, neighbour);
+            if (
+              nextSquare !== undefined &&
+              nextSquare.props.color == replaceColour &&
+              nextSquare.props.modifier === Modifier.none &&
+              nextSquare.props.targetColor !== Color.none &&
+              !includesCoordinate(visited, nextSquare.props.x, nextSquare.props.y) &&
+              !includesCoordinate(queue, nextSquare.props.x, nextSquare.props.y)
+            ) {
+              queue.push({ x: nextSquare.props.x, y: nextSquare.props.y });
+            }
+          }
+        );
+        if (game[current.x][current.y].props.modifier === Modifier.none) {
+          newGameState[current.x][current.y] = (
+            <Square
+              {...newGameState[current.x][current.y].props}
+              color={targetColor}
+            />
+          );
+          setGame(newGameState);
+        }
+        visited.push({x: current.x,y: current.y})
+      }
     }
     // Finally
     checkGameIsWon();
@@ -204,11 +268,16 @@ export function Game(props: GameProps) {
   return (
     <>
       {gameIsWon ? <div>WON!!!</div> : null}
-      <div className={styles.header}>Current: {moves} Best: todo</div>
+      <div className={styles.header}>
+        Current: {moves} <button onClick={() => reset()}>reset</button>
+        Best: todo
+      </div>
       <div className={styles.level}>
         <div className={styles.gameBoard}>
           {game.map((row, index) => (
-            <div key={index} className={styles.row}>{row}</div>
+            <div key={index} className={styles.row}>
+              {row}
+            </div>
           ))}
         </div>
       </div>
