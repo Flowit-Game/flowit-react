@@ -2,7 +2,7 @@ import {ReactElement, useState} from "react";
 import {Color, Modifier, Square, SquareProps} from "../Square/Square";
 import styles from "./Game.module.css";
 
-type Level = Array<Array<ReactElement>>;
+type Level = Array<Array<SquareProps>>;
 
 type GameProps = {
   level: Level;
@@ -29,9 +29,9 @@ export function Game(props: GameProps) {
         levelState[x].push(
           {
             key: `x${x}y${y}`,
-            color: square.props.color,
-            targetColor: square.props.targetColor,
-            modifier: square.props.modifier,
+            color: square.color,
+            targetColor: square.targetColor,
+            modifier: square.modifier,
             x: x,
             y: y,
             onClick: _event => {
@@ -45,9 +45,10 @@ export function Game(props: GameProps) {
   }
 
   function reset() {
-    // TODO This doesn't work... but WHY!?!
-    setGame(() => [...loadLevel(props.level)]);
-    setMoves(() => 0);
+    // TODO This doesn't work... the onclick even is stale, but WHY!?!
+    setGame([...loadLevel(props.level)]);
+    setMoves(0);
+    setGameIsWon(false)
   }
 
   function includesCoordinate(

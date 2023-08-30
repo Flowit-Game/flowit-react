@@ -1,141 +1,141 @@
 // This is just a place holder to test with,
 // later we will load all the levels by parsing the xml.
-import { Color, Modifier, Square } from "@/components/Square/Square";
+import { Color, Modifier, SquareProps } from "@/components/Square/Square";
 
-export const level = [
+export const level: Array<Array<SquareProps>> = [
   [
-    <Square
-      color={Color.none}
-      targetColor={Color.blue}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.none}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.yellow}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.yellow}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.yellow}
-      targetColor={Color.yellow}
-      modifier={Modifier.left}
-    />,
+    {
+      color: Color.none,
+      targetColor: Color.blue,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.none,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.yellow,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.yellow,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.yellow,
+      targetColor: Color.yellow,
+      modifier: Modifier.left,
+    },
   ],
   [
-    <Square
-      color={Color.none}
-      targetColor={Color.blue}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.none}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.none}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.none}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.none}
-      modifier={Modifier.none}
-    />,
+    {
+      color: Color.none,
+      targetColor: Color.blue,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.none,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.none,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.none,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.none,
+      modifier: Modifier.none,
+    },
   ],
   [
-    <Square
-      color={Color.none}
-      targetColor={Color.blue}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.none}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.red}
-      targetColor={Color.red}
-      modifier={Modifier.down}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.none}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.green}
-      modifier={Modifier.none}
-    />,
+    {
+      color: Color.none,
+      targetColor: Color.blue,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.none,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.red,
+      targetColor: Color.red,
+      modifier: Modifier.down,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.none,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.green,
+      modifier: Modifier.none,
+    },
   ],
   [
-    <Square
-      color={Color.none}
-      targetColor={Color.blue}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.none}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.red}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.none}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.green}
-      modifier={Modifier.none}
-    />,
+    {
+      color: Color.none,
+      targetColor: Color.blue,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.none,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.red,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.none,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.green,
+      modifier: Modifier.none,
+    },
   ],
   [
-    <Square
-      color={Color.blue}
-      targetColor={Color.blue}
-      modifier={Modifier.up}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.none}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.red}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.none}
-      targetColor={Color.none}
-      modifier={Modifier.none}
-    />,
-    <Square
-      color={Color.green}
-      targetColor={Color.green}
-      modifier={Modifier.up}
-    />,
+    {
+      color: Color.blue,
+      targetColor: Color.blue,
+      modifier: Modifier.up,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.none,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.red,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.none,
+      targetColor: Color.none,
+      modifier: Modifier.none,
+    },
+    {
+      color: Color.green,
+      targetColor: Color.green,
+      modifier: Modifier.up,
+    },
   ],
 ];
