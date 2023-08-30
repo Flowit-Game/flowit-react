@@ -24,7 +24,7 @@ export enum Modifier {
   bomb = "bomb"
 }
 
-type SquareProps = {
+export type SquareProps = {
   key?: string;
   color: Color;
   targetColor: Color;
