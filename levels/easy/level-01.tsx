@@ -2,7 +2,7 @@
 // later we will load all the levels by parsing the xml.
 import { Color, Modifier, SquareProps } from "@/components/Square/Square";
 
-export const level: Array<Array<SquareProps>> = [
+export const easyLevel1: Array<Array<SquareProps>> = [
   [
     {
       color: Color.none,

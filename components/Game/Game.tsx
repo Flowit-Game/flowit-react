@@ -1,21 +1,21 @@
-import {ReactElement, useState} from "react";
+import {useContext, useState} from "react";
 import {Color, Modifier, Square, SquareProps} from "../Square/Square";
 import styles from "./Game.module.css";
+import {LevelContext, levels} from "@/pages";
 
 type Level = Array<Array<SquareProps>>;
-
-type GameProps = {
-  level: Level;
-};
 
 type Coordinate = {
   x: number;
   y: number;
 };
 
-export function Game(props: GameProps) {
+export function Game() {
+  const {style, visible, toggleStyle, toggleVisible} = useContext(
+    LevelContext
+  );
   const [moves, setMoves] = useState(0);
-  const [game, setGame] = useState(loadLevel(props.level));
+  const [game, setGame] = useState(loadLevel(levels[style]));
   const [gameIsWon, setGameIsWon] = useState(false);
 
   function loadLevel(props: Level) {
@@ -46,7 +46,7 @@ export function Game(props: GameProps) {
 
   function reset() {
     // TODO This doesn't work... the onclick even is stale, but WHY!?!
-    setGame([...loadLevel(props.level)]);
+    setGame([...loadLevel(levels[style])]);
     setMoves(0);
     setGameIsWon(false)
   }
@@ -142,7 +142,9 @@ export function Game(props: GameProps) {
               modifier: nextSquare.modifier,
               x: nextSquare.x,
               y: nextSquare.y,
-              onClick: nextSquare.onClick,
+              onClick: _event => {
+                updateGame(nextSquare!.x!, nextSquare!.y!)
+              },
               // Changed values
               color: targetColor,
             };
@@ -163,7 +165,9 @@ export function Game(props: GameProps) {
               targetColor: game[x][y].targetColor,
               x: game[x][y].x,
               y: game[x][y].y,
-              onClick: game[x][y].onClick,
+              onClick: _event => {
+                updateGame(x, y)
+              },
               // Changed values
               modifier: Modifier.rotateRight,
             };
@@ -176,7 +180,9 @@ export function Game(props: GameProps) {
               targetColor: game[x][y].targetColor,
               x: game[x][y].x,
               y: game[x][y].y,
-              onClick: game[x][y].onClick,
+              onClick: _event => {
+                updateGame(x, y)
+              },
               // Changed values
               modifier: Modifier.rotateDown,
             };
@@ -189,7 +195,9 @@ export function Game(props: GameProps) {
               targetColor: game[x][y].targetColor,
               x: game[x][y].x,
               y: game[x][y].y,
-              onClick: game[x][y].onClick,
+              onClick: _event => {
+                updateGame(x, y)
+              },
               // Changed values
               modifier: Modifier.rotateLeft,
             };
@@ -202,7 +210,9 @@ export function Game(props: GameProps) {
               targetColor: game[x][y].targetColor,
               x: game[x][y].x,
               y: game[x][y].y,
-              onClick: game[x][y].onClick,
+              onClick: _event => {
+                updateGame(x, y)
+              },
               // Changed values
               modifier: Modifier.rotateUp,
             };
@@ -233,11 +243,13 @@ export function Game(props: GameProps) {
           if (square !== undefined && square.targetColor !== Color.none) {
             newGameState[square.x!][square.y!] =
               {
-                key: game[x][y].key,
-                targetColor: game[x][y].targetColor,
-                x: game[x][y].x,
-                y: game[x][y].y,
-                onClick: game[x][y].onClick,
+                key: game[square.x!][square.y!].key,
+                targetColor: game[square.x!][square.y!].targetColor,
+                x: square.x!,
+                y: square.y!,
+                onClick: _event => {
+                updateGame(square.x!, square.y!)
+              },
                 // Changed values
                 color: targetColor,
                 modifier: Modifier.none,
@@ -291,7 +303,9 @@ export function Game(props: GameProps) {
               modifier: game[current.x][current.y].modifier,
               x: game[current.x][current.y].x,
               y: game[current.x][current.y].y,
-              onClick: game[current.x][current.y].onClick,
+              onClick: _event => {
+                updateGame(current.x, current.y)
+              },
               // Changed values
               color: targetColor,
             };
@@ -303,7 +317,9 @@ export function Game(props: GameProps) {
     // Finally
     checkGameIsWon();
   }
-
+  if (style === 0){
+    return <></>
+  }
   return (
     <>
       {gameIsWon ? <div>WON!!!</div> : null}
