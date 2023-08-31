@@ -3,7 +3,7 @@ import {Color, Modifier, Square, SquareProps} from "../Square/Square";
 import styles from "./Game.module.css";
 import {LevelContext, levels} from "@/pages";
 
-type Level = Array<Array<SquareProps>>;
+export type Level = Array<Array<SquareProps>>;
 
 type Coordinate = {
   x: number;
@@ -11,11 +11,11 @@ type Coordinate = {
 };
 
 export function Game() {
-  const {style, visible, toggleStyle, toggleVisible} = useContext(
+  const {levelNumber} = useContext(
     LevelContext
   );
   const [moves, setMoves] = useState(0);
-  const [game, setGame] = useState(loadLevel(levels[style]));
+  const [game, setGame] = useState(loadLevel(levels[levelNumber]));
   const [gameIsWon, setGameIsWon] = useState(false);
 
   function loadLevel(props: Level) {
@@ -46,7 +46,7 @@ export function Game() {
 
   function reset() {
     // TODO This doesn't work... the onclick even is stale, but WHY!?!
-    setGame([...loadLevel(levels[style])]);
+    setGame([...loadLevel(levels[levelNumber])]);
     setMoves(0);
     setGameIsWon(false)
   }
@@ -317,11 +317,12 @@ export function Game() {
     // Finally
     checkGameIsWon();
   }
-  if (style === 0){
+  if (levelNumber === 0){
     return <></>
   }
   return (
     <>
+      <p>level {levelNumber}</p>
       {gameIsWon ? <div>WON!!!</div> : null}
       <div className={styles.header}>
         Current: {moves}

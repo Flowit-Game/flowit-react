@@ -1,37 +1,37 @@
-import { createContext, useState } from 'react';
+import {createContext, useState} from 'react';
 
 import styles from "./index.module.css";
 import Head from "./head";
-import { easyLevel1 } from "@/levels/easy/level-01";
-import { easyLevel2 } from "@/levels/easy/level-02";
-import { Game } from "@/components/Game/Game";
+import {easyLevel1} from "@/levels/easy/level-01";
+import {easyLevel2} from "@/levels/easy/level-02";
+import {Game, Level} from "@/components/Game/Game";
 import {LevelPicker} from "@/components/LevelPicker/LevelPicker";
 
-export const levels = {
-  0: easyLevel1, // Special null level
-  1: easyLevel1,
-  2: easyLevel2
-}
 
-export const LevelContext = createContext({style:0, visible:false, toggleStyle:() => {}, toggleVisible:() => {}});
+export const levels: Array<Level> = [
+  easyLevel1, // Special null level
+  easyLevel1,
+  easyLevel2
+]
+
+export const LevelContext = createContext({
+  levelNumber: 0, changeLevelNumber: (_level: number) => {}
+});
 
 export default function Home() {
-  const [style, setStyle] = useState(0);
-  const [visible, setVisible] = useState(true);
+  const [levelNumber, setLevelNumber] = useState(0);
 
-  function toggleStyle() {
-    setStyle(style => (style === 0 ? 1 : 0));
+  function changeLevelNumber(level: number) {
+    setLevelNumber(() => level);
   }
-  function toggleVisible() {
-    setVisible(visible => !visible);
-  }
+
   return (
     <LevelContext.Provider
-      value={{ style, visible, toggleStyle, toggleVisible }}
+      value={{levelNumber, changeLevelNumber}}
     >
-      <Head />
+      <Head/>
       <main className={styles.main}>
-        <LevelPicker />
+        <LevelPicker/>
         <Game/>
       </main>
     </LevelContext.Provider>
