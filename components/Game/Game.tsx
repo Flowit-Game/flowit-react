@@ -10,6 +10,197 @@ type Coordinate = {
   y: number;
 };
 
+const includesCoordinate = function (
+  elements: Array<Coordinate>,
+  x: number,
+  y: number
+) {
+  return elements.some((element) => element.x === x && element.y === y);
+}
+
+const checkGameIsWon = function(gameState: Level) {
+    const freshGameState = loadLevel(gameState)
+    let won = true;
+    freshGameState.forEach((row) => {
+      row.forEach((square) => {
+        if (square.color !== square.targetColor) {
+          won = false;
+        }
+      });
+    });
+    return won
+  }
+
+const getNextSquare = function (x: number, y: number, direction: Modifier, gameState: Level) {
+  const freshGameState = loadLevel(gameState)
+  let nextSquare = undefined;
+  try {
+    if (direction === Modifier.up || direction === Modifier.rotateUp) {
+      nextSquare = freshGameState[x - 1][y];
+    } else if (
+      direction === Modifier.right ||
+      direction === Modifier.rotateRight
+    ) {
+      nextSquare = freshGameState[x][y + 1];
+    } else if (
+      direction === Modifier.down ||
+      direction === Modifier.rotateDown
+    ) {
+      nextSquare = freshGameState[x + 1][y];
+    } else if (
+      direction === Modifier.left ||
+      direction === Modifier.rotateLeft
+    ) {
+      nextSquare = gameState[x][y - 1];
+    } else if (direction === Modifier.none) {
+      nextSquare = freshGameState[x][y];
+    }
+  } catch (err) {
+  }
+  return nextSquare;
+}
+
+const loadLevel = function (props: Level) {
+  // This would load an xml file, would probably have to loop twice
+  // once to load the colours, and once to load the modifiers
+  // for now though just use the place holder level 0
+  const levelState: Array<Array<SquareProps>> = [];
+  for (const [x, row] of props.entries()) {
+    levelState.push([]);
+    for (const [y, square] of row.entries()) {
+      levelState[x].push(
+        {
+          key: `x${x}y${y}`,
+          color: square.color,
+          targetColor: square.targetColor,
+          modifier: square.modifier,
+          x: x,
+          y: y,
+        }
+      );
+    }
+  }
+  return levelState;
+}
+
+const updateGame = function (x: number, y: number, gameState: Level) {
+  const freshGameState = loadLevel(gameState)
+  if (
+    freshGameState[x][y].modifier === Modifier.up ||
+    freshGameState[x][y].modifier === Modifier.right ||
+    freshGameState[x][y].modifier === Modifier.down ||
+    freshGameState[x][y].modifier === Modifier.left ||
+    freshGameState[x][y].modifier === Modifier.rotateUp ||
+    freshGameState[x][y].modifier === Modifier.rotateRight ||
+    freshGameState[x][y].modifier === Modifier.rotateDown ||
+    freshGameState[x][y].modifier === Modifier.rotateLeft
+  ) {
+    let nextSquare = getNextSquare(x, y, freshGameState[x][y].modifier, freshGameState);
+    const arrowColour = freshGameState[x][y].color;
+    const targetColor = nextSquare?.color == arrowColour ? Color.none : arrowColour;
+    const replaceColour = nextSquare?.color == arrowColour ? arrowColour : Color.none;
+    try {
+      while (
+        // The next square exists on the grid
+      nextSquare !== undefined &&
+      // and it's not a blank space
+      nextSquare.targetColor !== Color.none &&
+      // and it's not a modifier square
+      nextSquare.modifier === Modifier.none &&
+      // and it's either empty, and we are adding colours
+      nextSquare.color === replaceColour) {
+        freshGameState[nextSquare.x!][nextSquare.y!].color = targetColor
+        nextSquare = getNextSquare(
+          nextSquare.x!,
+          nextSquare.y!,
+          freshGameState[x][y].modifier,
+          freshGameState
+        );
+      }
+      // If it was a rotating arrow, turn it
+      if (freshGameState[x][y].modifier === Modifier.rotateUp) {
+        freshGameState[x][y].modifier = Modifier.rotateRight
+      } else if (freshGameState[x][y].modifier === Modifier.rotateRight) {
+        freshGameState[x][y].modifier = Modifier.rotateDown
+      } else if (freshGameState[x][y].modifier === Modifier.rotateDown) {
+        freshGameState[x][y].modifier = Modifier.rotateLeft
+      } else if (freshGameState[x][y].modifier === Modifier.rotateLeft) {
+        freshGameState[x][y].modifier = Modifier.rotateUp
+      }
+    } catch (error) {
+      console.error(`${error} ${nextSquare}`);
+    }
+  } else if (freshGameState[x][y].modifier === Modifier.bomb) {
+    const squaresToUpdate = [
+      // Top row
+      getNextSquare(x - 1, y - 1, Modifier.none, freshGameState),
+      getNextSquare(x - 1, y, Modifier.none, freshGameState),
+      getNextSquare(x - 1, y + 1, Modifier.none, freshGameState),
+      // Middle row
+      getNextSquare(x, y - 1, Modifier.none, freshGameState),
+      getNextSquare(x, y, Modifier.none, freshGameState),
+      getNextSquare(x, y + 1, Modifier.none, freshGameState),
+      // Bottom row
+      getNextSquare(x + 1, y - 1, Modifier.none, freshGameState),
+      getNextSquare(x + 1, y, Modifier.none, freshGameState),
+      getNextSquare(x + 1, y + 1, Modifier.none, freshGameState),
+    ];
+    const targetColor = freshGameState[x][y].color;
+    try {
+      squaresToUpdate.forEach((square) => {
+        if (square !== undefined && square.targetColor !== Color.none) {
+          freshGameState[square.x!][square.y!].color = targetColor
+          freshGameState[square.x!][square.y!].modifier = Modifier.none
+        }
+      });
+    } catch (error) {
+      console.error(`${error}`);
+    }
+  } else if (freshGameState[x][y].modifier === Modifier.circle) {
+    const queue: Array<Coordinate> = [{x: x, y: y}];
+    const visited: Array<Coordinate> = [];
+    // If any neighbour is empty, but has a target colour
+    const fill = (
+      (getNextSquare(x, y, Modifier.up, freshGameState)?.color === Color.none &&
+        getNextSquare(x, y, Modifier.up, freshGameState)?.targetColor !== Color.none) ||
+      (getNextSquare(x, y, Modifier.right, freshGameState)?.color === Color.none &&
+        getNextSquare(x, y, Modifier.right, freshGameState)?.targetColor !== Color.none) ||
+      (getNextSquare(x, y, Modifier.down, freshGameState)?.color === Color.none &&
+        getNextSquare(x, y, Modifier.down, freshGameState)?.targetColor !== Color.none) ||
+      (getNextSquare(x, y, Modifier.left, freshGameState)?.color === Color.none &&
+        getNextSquare(x, y, Modifier.left, freshGameState)?.targetColor !== Color.none)
+    )
+    const targetColor = fill ? freshGameState[x][y].color : Color.none;
+    const replaceColour = fill ? Color.none : freshGameState[x][y].color;
+    while (queue.length) {
+      const current = queue.pop()!;
+      // Check the 4 neighbour and add them to the queue
+      [Modifier.up, Modifier.right, Modifier.down, Modifier.left].forEach(
+        (neighbour) => {
+          const nextSquare = getNextSquare(current.x, current.y, neighbour, freshGameState);
+          if (
+            nextSquare !== undefined &&
+            nextSquare.color === replaceColour &&
+            nextSquare.modifier === Modifier.none &&
+            nextSquare.targetColor !== Color.none &&
+            !includesCoordinate(visited, nextSquare.x!, nextSquare.y!) &&
+            !includesCoordinate(queue, nextSquare.x!, nextSquare.y!)
+          ) {
+            queue.push({x: nextSquare.x!, y: nextSquare.y!});
+          }
+        }
+      );
+      if (freshGameState[current.x][current.y].modifier === Modifier.none) {
+        freshGameState[current.x][current.y].color = targetColor
+      }
+      visited.push({x: current.x, y: current.y})
+    }
+  }
+  // Finally
+  return freshGameState
+}
+
+
 export function Game() {
   const {levelNumber} = useContext(
     LevelContext
@@ -18,306 +209,31 @@ export function Game() {
   const [game, setGame] = useState(loadLevel(levels[levelNumber]));
   const [gameIsWon, setGameIsWon] = useState(false);
 
-  function loadLevel(props: Level) {
-    // This would load an xml file, would probably have to loop twice
-    // once to load the colours, and once to load the modifiers
-    // for now though just use the place holder level 0
-    const levelState: Array<Array<SquareProps>> = [];
-    for (const [x, row] of props.entries()) {
-      levelState.push([]);
-      for (const [y, square] of row.entries()) {
-        levelState[x].push(
-          {
-            key: `x${x}y${y}`,
-            color: square.color,
-            targetColor: square.targetColor,
-            modifier: square.modifier,
-            x: x,
-            y: y,
-            onClick: _event => {
-              updateGame(x, y)
-            }
-          }
-        );
-      }
-    }
-    return levelState;
-  }
-
   function reset() {
-    // TODO This doesn't work... the onclick even is stale, but WHY!?!
-    setGame([...loadLevel(levels[levelNumber])]);
+    setGame(loadLevel(levels[levelNumber]));
     setMoves(0);
     setGameIsWon(false)
   }
 
-  function includesCoordinate(
-    elements: Array<Coordinate>,
-    x: number,
-    y: number
-  ) {
-    return elements.some((element) => element.x === x && element.y === y);
-  }
-
-  function checkGameIsWon() {
-    let won = true;
-    game.forEach((row) => {
-      row.forEach((square) => {
-        if (square.color !== square.targetColor) {
-          won = false;
-        }
-      });
-    });
-    setGameIsWon(won);
-  }
-
-  function getNextSquare(x: number, y: number, direction: Modifier) {
-    let nextSquare = undefined;
-    try {
-      if (direction === Modifier.up || direction === Modifier.rotateUp) {
-        nextSquare = game[x - 1][y];
-      } else if (
-        direction === Modifier.right ||
-        direction === Modifier.rotateRight
-      ) {
-        nextSquare = game[x][y + 1];
-      } else if (
-        direction === Modifier.down ||
-        direction === Modifier.rotateDown
-      ) {
-        nextSquare = game[x + 1][y];
-      } else if (
-        direction === Modifier.left ||
-        direction === Modifier.rotateLeft
-      ) {
-        nextSquare = game[x][y - 1];
-      } else if (direction === Modifier.none) {
-        nextSquare = game[x][y];
-      }
-    } catch (err) {
-    }
-    return nextSquare;
-  }
-
-  function updateGame(x: number, y: number) {
+  function onClick(x: number, y: number) {
     if (game[x][y].modifier !== Modifier.none) {
-      setMoves((moves) => moves + 1);
+      setMoves(moves => moves + 1)
+      setGame(game => {
+        const newState = updateGame(x, y, game);
+        const won = checkGameIsWon(newState)
+        setGameIsWon(won)
+        return newState
+      })
     }
-    if (
-      game[x][y].modifier === Modifier.up ||
-      game[x][y].modifier === Modifier.right ||
-      game[x][y].modifier === Modifier.down ||
-      game[x][y].modifier === Modifier.left ||
-      game[x][y].modifier === Modifier.rotateUp ||
-      game[x][y].modifier === Modifier.rotateRight ||
-      game[x][y].modifier === Modifier.rotateDown ||
-      game[x][y].modifier === Modifier.rotateLeft
-    ) {
-      let nextSquare = getNextSquare(x, y, game[x][y].modifier);
-      const newGameState = [...game];
-      const arrowColour = game[x][y].color;
-      const targetColor =
-        nextSquare?.color == game[x][y].color
-          ? Color.none
-          : game[x][y].color;
-      try {
-        while (
-        // The next square exists on the grid
-        nextSquare !== undefined &&
-        // and it's not a blank space
-        nextSquare.targetColor !== Color.none &&
-        // and it's not a modifier square
-        nextSquare.modifier === Modifier.none &&
-        // and it's either empty, and we are adding colours
-        ((nextSquare.color === Color.none &&
-            targetColor !== Color.none) ||
-          // or it's the arrow colour and we are removing colours
-          (nextSquare.color === arrowColour &&
-            targetColor === Color.none))
-          ) {
-          newGameState[nextSquare.x!][nextSquare.y!] =
-            {
-              key: nextSquare.key,
-              targetColor: nextSquare.targetColor,
-              modifier: nextSquare.modifier,
-              x: nextSquare.x,
-              y: nextSquare.y,
-              onClick: _event => {
-                updateGame(nextSquare!.x!, nextSquare!.y!)
-              },
-              // Changed values
-              color: targetColor,
-            };
-          setGame(newGameState);
-          nextSquare = getNextSquare(
-            nextSquare.x!,
-            nextSquare.y!,
-            game[x][y].modifier
-          );
-        }
-        // If it was a rotating arrow, turn it
-        // TODO refactor this
-        if (game[x][y].modifier === Modifier.rotateUp) {
-          newGameState[x][y] =
-            {
-              key: game[x][y].key,
-              color: game[x][y].color,
-              targetColor: game[x][y].targetColor,
-              x: game[x][y].x,
-              y: game[x][y].y,
-              onClick: _event => {
-                updateGame(x, y)
-              },
-              // Changed values
-              modifier: Modifier.rotateRight,
-            };
-          setGame(newGameState);
-        } else if (game[x][y].modifier === Modifier.rotateRight) {
-          newGameState[x][y] =
-            {
-              key: game[x][y].key,
-              color: game[x][y].color,
-              targetColor: game[x][y].targetColor,
-              x: game[x][y].x,
-              y: game[x][y].y,
-              onClick: _event => {
-                updateGame(x, y)
-              },
-              // Changed values
-              modifier: Modifier.rotateDown,
-            };
-          setGame(newGameState);
-        } else if (game[x][y].modifier === Modifier.rotateDown) {
-          newGameState[x][y] =
-            {
-              key: game[x][y].key,
-              color: game[x][y].color,
-              targetColor: game[x][y].targetColor,
-              x: game[x][y].x,
-              y: game[x][y].y,
-              onClick: _event => {
-                updateGame(x, y)
-              },
-              // Changed values
-              modifier: Modifier.rotateLeft,
-            };
-          setGame(newGameState);
-        } else if (game[x][y].modifier === Modifier.rotateLeft) {
-          newGameState[x][y] =
-            {
-              key: game[x][y].key,
-              color: game[x][y].color,
-              targetColor: game[x][y].targetColor,
-              x: game[x][y].x,
-              y: game[x][y].y,
-              onClick: _event => {
-                updateGame(x, y)
-              },
-              // Changed values
-              modifier: Modifier.rotateUp,
-            };
-          setGame(newGameState);
-        }
-      } catch (error) {
-        console.error(`${error} ${nextSquare}`);
-      }
-    } else if (game[x][y].modifier === Modifier.bomb) {
-      const squaresToUpdate = [
-        // Top row
-        getNextSquare(x - 1, y - 1, Modifier.none),
-        getNextSquare(x - 1, y, Modifier.none),
-        getNextSquare(x - 1, y + 1, Modifier.none),
-        // Middle row
-        getNextSquare(x, y - 1, Modifier.none),
-        getNextSquare(x, y, Modifier.none),
-        getNextSquare(x, y + 1, Modifier.none),
-        // Bottom row
-        getNextSquare(x + 1, y - 1, Modifier.none),
-        getNextSquare(x + 1, y, Modifier.none),
-        getNextSquare(x + 1, y + 1, Modifier.none),
-      ];
-      const newGameState = [...game];
-      const targetColor = game[x][y].color;
-      try {
-        squaresToUpdate.forEach((square) => {
-          if (square !== undefined && square.targetColor !== Color.none) {
-            newGameState[square.x!][square.y!] =
-              {
-                key: game[square.x!][square.y!].key,
-                targetColor: game[square.x!][square.y!].targetColor,
-                x: square.x!,
-                y: square.y!,
-                onClick: _event => {
-                updateGame(square.x!, square.y!)
-              },
-                // Changed values
-                color: targetColor,
-                modifier: Modifier.none,
-              };
-            setGame(newGameState);
-          }
-        });
-      } catch (error) {
-        console.error(`${error}`);
-      }
-    } else if (game[x][y].modifier === Modifier.circle) {
-      const newGameState = [...game];
-      const queue: Array<Coordinate> = [{x: x, y: y}];
-      const visited: Array<Coordinate> = [];
-      // If any neighbour is empty, but has a target colour
-      const fill = (
-        (getNextSquare(x, y, Modifier.up)?.color === Color.none &&
-          getNextSquare(x, y, Modifier.up)?.targetColor !== Color.none) ||
-        (getNextSquare(x, y, Modifier.right)?.color === Color.none &&
-          getNextSquare(x, y, Modifier.right)?.targetColor !== Color.none) ||
-        (getNextSquare(x, y, Modifier.down)?.color === Color.none &&
-          getNextSquare(x, y, Modifier.down)?.targetColor !== Color.none) ||
-        (getNextSquare(x, y, Modifier.left)?.color === Color.none &&
-          getNextSquare(x, y, Modifier.left)?.targetColor !== Color.none)
-      )
-      const targetColor = fill ? game[x][y].color : Color.none;
-      const replaceColour = fill ? Color.none : game[x][y].color;
-      while (queue.length) {
-        const current = queue.pop()!;
-        // Check the 4 neighbour and add them to the queue
-        [Modifier.up, Modifier.right, Modifier.down, Modifier.left].forEach(
-          (neighbour) => {
-            const nextSquare = getNextSquare(current.x, current.y, neighbour);
-            if (
-              nextSquare !== undefined &&
-              nextSquare.color === replaceColour &&
-              nextSquare.modifier === Modifier.none &&
-              nextSquare.targetColor !== Color.none &&
-              !includesCoordinate(visited, nextSquare.x!, nextSquare.y!) &&
-              !includesCoordinate(queue, nextSquare.x!, nextSquare.y!)
-            ) {
-              queue.push({x: nextSquare.x!, y: nextSquare.y!});
-            }
-          }
-        );
-        if (game[current.x][current.y].modifier === Modifier.none) {
-          newGameState[current.x][current.y] =
-            {
-              key: game[current.x][current.y].key,
-              targetColor: game[current.x][current.y].targetColor,
-              modifier: game[current.x][current.y].modifier,
-              x: game[current.x][current.y].x,
-              y: game[current.x][current.y].y,
-              onClick: _event => {
-                updateGame(current.x, current.y)
-              },
-              // Changed values
-              color: targetColor,
-            };
-          setGame(newGameState);
-        }
-        visited.push({x: current.x, y: current.y})
-      }
-    }
-    // Finally
-    checkGameIsWon();
   }
-  if (levelNumber === 0){
+
+  game.forEach((row) => {
+    row.forEach((square) => {
+      square.onClick = () => onClick(square.x!, square.y!)
+    })
+  })
+
+  if (levelNumber === 0) {
     return <></>
   }
   return (
