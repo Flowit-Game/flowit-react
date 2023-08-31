@@ -14,6 +14,7 @@ export function LevelPicker() {
     <div>
       <button onClick={() => changeLevelNumber(1)}>Level 1</button>
       <button onClick={() => changeLevelNumber(2)}>Level 2</button>
+      <button onClick={() => changeLevelNumber(3)}>Level 25</button>
     </div>
   );
 }

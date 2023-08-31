@@ -1,4 +1,4 @@
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Color, Modifier, Square, SquareProps} from "../Square/Square";
 import styles from "./Game.module.css";
 import {LevelContext, levels} from "@/pages";
@@ -18,18 +18,18 @@ const includesCoordinate = function (
   return elements.some((element) => element.x === x && element.y === y);
 }
 
-const checkGameIsWon = function(gameState: Level) {
-    const freshGameState = loadLevel(gameState)
-    let won = true;
-    freshGameState.forEach((row) => {
-      row.forEach((square) => {
-        if (square.color !== square.targetColor) {
-          won = false;
-        }
-      });
+const checkGameIsWon = function (gameState: Level) {
+  const freshGameState = loadLevel(gameState)
+  let won = true;
+  freshGameState.forEach((row) => {
+    row.forEach((square) => {
+      if (square.color !== square.targetColor) {
+        won = false;
+      }
     });
-    return won
-  }
+  });
+  return won
+}
 
 const getNextSquare = function (x: number, y: number, direction: Modifier, gameState: Level) {
   const freshGameState = loadLevel(gameState)
@@ -202,12 +202,18 @@ const updateGame = function (x: number, y: number, gameState: Level) {
 
 
 export function Game() {
-  const {levelNumber} = useContext(
+  const {levelNumber, changeLevelNumber} = useContext(
     LevelContext
   );
   const [moves, setMoves] = useState(0);
   const [game, setGame] = useState(loadLevel(levels[levelNumber]));
   const [gameIsWon, setGameIsWon] = useState(false);
+
+  useEffect(() => {
+      // Reset the game every time the level changes
+      reset()
+    //TODO fix? or just ignore?
+  }, [levelNumber]);
 
   function reset() {
     setGame(loadLevel(levels[levelNumber]));
@@ -241,9 +247,12 @@ export function Game() {
       <p>level {levelNumber}</p>
       {gameIsWon ? <div>WON!!!</div> : null}
       <div className={styles.header}>
+        {/* TODO styling */}
+        <button onClick={() => changeLevelNumber(levelNumber - 1)}>prev</button>
         Current: {moves}
         <button onClick={() => reset()}>reset</button>
         Best: todo
+        <button onClick={() => changeLevelNumber(levelNumber + 1)}>next</button>
       </div>
       <div className={styles.level}>
         <div className={styles.gameBoard}>
