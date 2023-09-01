@@ -10,18 +10,20 @@ import {LevelPicker} from "@/components/LevelPicker/LevelPicker";
 
 
 export const levels: Array<Level> = [
-  easyLevel1, // Special null level
   easyLevel1,
   easyLevel2,
   easyLevel3,
 ]
 
 export const LevelContext = createContext({
-  levelNumber: 0, changeLevelNumber: (_level: number) => {}
+  levelNumber: 0,
+  changeLevelNumber: (_level: number) => {},
+  setGameStarted: (_start: boolean) => {},
 });
 
 export default function Home() {
   const [levelNumber, setLevelNumber] = useState(0);
+  const [gameStarted, setGameStarted] = useState(false)
 
   function changeLevelNumber(level: number) {
     setLevelNumber(() => level);
@@ -29,12 +31,11 @@ export default function Home() {
 
   return (
     <LevelContext.Provider
-      value={{levelNumber, changeLevelNumber}}
+      value={{levelNumber, changeLevelNumber, setGameStarted}}
     >
       <Head/>
       <main className={styles.main}>
-        <LevelPicker/>
-        <Game/>
+        {gameStarted ?  <Game/> : <LevelPicker/>}
       </main>
     </LevelContext.Provider>
   );

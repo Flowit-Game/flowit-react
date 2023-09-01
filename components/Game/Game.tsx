@@ -239,12 +239,9 @@ export function Game() {
     })
   })
 
-  if (levelNumber === 0) {
-    return <></>
-  }
   return (
     <>
-      <p>level {levelNumber}</p>
+      <p>level {levelNumber + 1}</p>
       {gameIsWon ? <div>WON!!!</div> : null}
       <div className={styles.header}>
         {/* TODO styling */}

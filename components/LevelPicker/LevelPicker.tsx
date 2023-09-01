@@ -1,20 +1,20 @@
 import {useContext} from "react";
-import {LevelContext} from "@/pages";
-
+import {LevelContext, levels} from "@/pages";
+import styles from "./LevelPicker.module.css"
 
 export function LevelPicker() {
 
-  const {changeLevelNumber} = useContext(
+  const {changeLevelNumber, setGameStarted} = useContext(
     LevelContext
   );
   return (
-    // TODO
-    //  * For loop of levels
-    //  * Hide when Level != 0
-    <div>
-      <button onClick={() => changeLevelNumber(1)}>Level 1</button>
-      <button onClick={() => changeLevelNumber(2)}>Level 2</button>
-      <button onClick={() => changeLevelNumber(3)}>Level 25</button>
+    <div className={styles.pickerArea}>
+      {levels.map((_level, index) => (
+        <button key={index} onClick={() => {
+          changeLevelNumber(index)
+          setGameStarted(true)
+        }}>Level {index + 1}</button>
+      ))}
     </div>
   );
 }

@@ -1,8 +1,9 @@
 // A good test level because it has a bomb, fill and turning arrow
 // 25 didn't originally have one, but I've added one as a test.
-import { Color, Modifier, SquareProps } from "@/components/Square/Square";
+import { Color, Modifier } from "@/components/Square/Square";
+import {Level} from "@/components/Game/Game";
 
-export const easyLevel3: Array<Array<SquareProps>> = [
+export const easyLevel3: Level = [
   [
     {
       color: Color.none,

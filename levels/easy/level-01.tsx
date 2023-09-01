@@ -1,8 +1,9 @@
 // This is just a place holder to test with,
 // later we will load all the levels by parsing the xml.
-import { Color, Modifier, SquareProps } from "@/components/Square/Square";
+import { Color, Modifier } from "@/components/Square/Square";
+import {Level} from "@/components/Game/Game";
 
-export const easyLevel1: Array<Array<SquareProps>> = [
+export const easyLevel1: Level = [
   [
     {
       color: Color.none,
