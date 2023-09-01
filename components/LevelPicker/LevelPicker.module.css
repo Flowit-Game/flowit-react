@@ -7,7 +7,6 @@
     justify-content: center;
 }
 .clickableArea {
-    background-color: pink;
     padding: 12px;
     margin: 3px;
     flex-grow: 1;
@@ -17,22 +16,22 @@
     background-color: cornflowerblue;
     height: 2rem;
     float: left;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 .levelNumber {
     padding-left: 1rem;
-    color: green;
     float: left;
     height: 100%;
     display: flex;
     align-items:center;
 }
-/* TODO replace these with background icons (Tick, blank, lock)*/
 .complete {
-    background-color: green;
+    background-image: url('./images/tick.svg');
 }
 .unlocked {
-    background-color: cadetblue;
+    /* blank */
 }
 .locked {
-    background-color: red;
+    background-image: url('./images/lock.svg');
 }

@@ -62,7 +62,7 @@ const getNextSquare = function (x: number, y: number, direction: Modifier, gameS
 
 const loadLevel = function (props: Level) {
   // This would load an xml file, would probably have to loop twice
-  // once to load the colours, and once to load the modifiers
+  // once to load the colors, and once to load the modifiers
   // for now though just use the place holder level 0
   const levelState: Array<Array<SquareProps>> = [];
   for (const [x, row] of props.entries()) {
@@ -107,7 +107,7 @@ const updateGame = function (x: number, y: number, gameState: Level) {
       nextSquare.targetColor !== Color.none &&
       // and it's not a modifier square
       nextSquare.modifier === Modifier.none &&
-      // and it's either empty, and we are adding colours
+      // and it's either empty, and we are adding colors
       nextSquare.color === replaceColour) {
         freshGameState[nextSquare.x!][nextSquare.y!].color = targetColor
         nextSquare = getNextSquare(
@@ -159,7 +159,7 @@ const updateGame = function (x: number, y: number, gameState: Level) {
   } else if (freshGameState[x][y].modifier === Modifier.circle) {
     const queue: Array<Coordinate> = [{x: x, y: y}];
     const visited: Array<Coordinate> = [];
-    // If any neighbour is empty, but has a target colour
+    // If any neighbour is empty, but has a target color
     const fill = (
       (getNextSquare(x, y, Modifier.up, freshGameState)?.color === Color.none &&
         getNextSquare(x, y, Modifier.up, freshGameState)?.targetColor !== Color.none) ||
