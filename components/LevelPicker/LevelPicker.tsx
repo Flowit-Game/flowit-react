@@ -4,16 +4,24 @@ import styles from "./LevelPicker.module.css"
 
 export function LevelPicker() {
 
-  const {changeLevelNumber, setGameStarted} = useContext(
+  const {changeLevelNumber, setGameStarted, levelProgress} = useContext(
     LevelContext
   );
   return (
     <div className={styles.pickerArea}>
       {levels.map((_level, index) => (
-        <button key={index} onClick={() => {
-          changeLevelNumber(index)
-          setGameStarted(true)
-        }}>Level {index + 1}</button>
+        <div
+          key={index}
+          onClick={() => {
+            changeLevelNumber(index)
+            setGameStarted(true)
+          }}
+          className={styles.clickableArea}
+        >
+          {/* TODO figure out how to apply status class correctly */}
+          <div className={`${styles.levelStatus} ${levelProgress[index].status}`}></div>
+          <div className={styles.levelNumber}>{index + 1}</div>
+        </div>
       ))}
     </div>
   );

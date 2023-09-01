@@ -1,3 +1,38 @@
 .pickerArea {
     padding: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 768px;
+    margin: auto;
+    justify-content: center;
+}
+.clickableArea {
+    background-color: pink;
+    padding: 12px;
+    margin: 3px;
+    flex-grow: 1;
+}
+.levelStatus {
+    aspect-ratio: 1;
+    background-color: cornflowerblue;
+    height: 2rem;
+    float: left;
+}
+.levelNumber {
+    padding-left: 1rem;
+    color: green;
+    float: left;
+    height: 100%;
+    display: flex;
+    align-items:center;
+}
+/* TODO replace these with background icons (Tick, blank, lock)*/
+.complete {
+    background-color: green;
+}
+.unlocked {
+    background-color: cadetblue;
+}
+.locked {
+    background-color: red;
 }
