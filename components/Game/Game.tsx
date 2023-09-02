@@ -35,7 +35,10 @@ const getNextSquare = function (x: number, y: number, direction: Modifier, gameS
   const freshGameState = loadLevel(gameState)
   let nextSquare = undefined;
   try {
-    if (direction === Modifier.up || direction === Modifier.rotateUp) {
+    if (
+      direction === Modifier.up ||
+      direction === Modifier.rotateUp
+    ) {
       nextSquare = freshGameState[x - 1][y];
     } else if (
       direction === Modifier.right ||
@@ -259,12 +262,16 @@ export function Game() {
     <>
       {gameIsWon ? <div>WON!!!</div> : null}
       <div className={styles.header}>
-        {/* TODO styling */}
-        <button onClick={decrementLevelNumber}>prev</button>
-        Current: {moves}
-        <button onClick={reset}>reset</button>
-        Best: {levelProgress[levelNumber].best}
-        <button onClick={incrementLevelNumber}>next</button>
+        <div className={styles.headerContent}>
+          <button onClick={decrementLevelNumber} className={styles.previous}></button>
+          <button onClick={reset} className={styles.reset}></button>
+          <div>
+            <p>Current: {moves}</p>
+            <p>Best: {levelProgress[levelNumber].best}</p>
+          </div>
+          <button onClick={() => setGameStarted(false)} className={styles.home}></button>
+          <button onClick={incrementLevelNumber} className={styles.next}></button>
+        </div>
       </div>
       <div className={styles.level}>
         <div className={styles.gameBoard}>
