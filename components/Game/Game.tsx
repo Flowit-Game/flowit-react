@@ -202,7 +202,7 @@ const updateGame = function (x: number, y: number, gameState: Level) {
 
 
 export function Game() {
-  const {levelNumber, changeLevelNumber} = useContext(
+  const {levelNumber, changeLevelNumber, levelProgress, setGameStarted} = useContext(
     LevelContext
   );
   const [moves, setMoves] = useState(0);
@@ -210,8 +210,8 @@ export function Game() {
   const [gameIsWon, setGameIsWon] = useState(false);
 
   useEffect(() => {
-      // Reset the game every time the level changes
-      reset()
+    // Reset the game every time the level changes
+    reset()
     //TODO fix? or just ignore?
   }, [levelNumber]);
 
@@ -219,6 +219,22 @@ export function Game() {
     setGame(loadLevel(levels[levelNumber]));
     setMoves(0);
     setGameIsWon(false)
+  }
+
+  function incrementLevelNumber() {
+    if (levelNumber + 1 === levels.length) {
+      setGameStarted(false);
+    } else {
+      changeLevelNumber(levelNumber + 1)
+    }
+  }
+
+  function decrementLevelNumber() {
+    if (levelNumber === 0) {
+      setGameStarted(false);
+    } else {
+      changeLevelNumber(levelNumber - 1)
+    }
   }
 
   function onClick(x: number, y: number) {
@@ -241,15 +257,14 @@ export function Game() {
 
   return (
     <>
-      <p>level {levelNumber + 1}</p>
       {gameIsWon ? <div>WON!!!</div> : null}
       <div className={styles.header}>
         {/* TODO styling */}
-        <button onClick={() => changeLevelNumber(levelNumber - 1)}>prev</button>
+        <button onClick={decrementLevelNumber}>prev</button>
         Current: {moves}
-        <button onClick={() => reset()}>reset</button>
-        Best: todo
-        <button onClick={() => changeLevelNumber(levelNumber + 1)}>next</button>
+        <button onClick={reset}>reset</button>
+        Best: {levelProgress[levelNumber].best}
+        <button onClick={incrementLevelNumber}>next</button>
       </div>
       <div className={styles.level}>
         <div className={styles.gameBoard}>
