@@ -202,7 +202,7 @@ const updateGame = function (x: number, y: number, gameState: Level) {
 
 
 export function Game() {
-  const {levelNumber, changeLevelNumber, levelProgress, setGameStarted} = useContext(
+  const {levelNumber, changeLevelNumber, levelProgress, setGameStarted, changeLevelProgress} = useContext(
     LevelContext
   );
   const [moves, setMoves] = useState(0);
@@ -215,13 +215,28 @@ export function Game() {
     //TODO fix? or just ignore?
   }, [levelNumber]);
 
+  useEffect(() => {
+    if (gameIsWon) {
+      if (levelProgress[levelNumber].best === null || moves < levelProgress[levelNumber].best!)
+      {
+        const newProgress = [...levelProgress]
+        newProgress[levelNumber].best = moves
+        newProgress[levelNumber].status = "complete"
+        changeLevelProgress(newProgress)
+      }
+    }
+  }, [gameIsWon, levelProgress, levelNumber, moves, changeLevelProgress]);
+
   function reset() {
+    setGameIsWon(false)
     setGame(loadLevel(levels[levelNumber]));
     setMoves(0);
-    setGameIsWon(false)
   }
 
   function incrementLevelNumber() {
+    // Unset gameIsWon before changing level, so we don't accidentally mark the level as complete
+    // when the new game is loaded before gameIsWon is recalculated
+    setGameIsWon(false)
     if (levelNumber + 1 === levels.length) {
       setGameStarted(false);
     } else {
@@ -230,6 +245,7 @@ export function Game() {
   }
 
   function decrementLevelNumber() {
+    setGameIsWon(false)
     if (levelNumber === 0) {
       setGameStarted(false);
     } else {
