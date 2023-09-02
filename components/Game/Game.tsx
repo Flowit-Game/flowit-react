@@ -64,9 +64,6 @@ const getNextSquare = function (x: number, y: number, direction: Modifier, gameS
 }
 
 const loadLevel = function (props: Level) {
-  // This would load an xml file, would probably have to loop twice
-  // once to load the colors, and once to load the modifiers
-  // for now though just use the place holder level 0
   const levelState: Array<Array<SquareProps>> = [];
   for (const [x, row] of props.entries()) {
     levelState.push([]);

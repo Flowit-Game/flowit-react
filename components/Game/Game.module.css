@@ -18,6 +18,7 @@
     background-size: contain;
     border: none;
     margin: 2px;
+    background-color: transparent;
 }
 .level {
     display: flex;
