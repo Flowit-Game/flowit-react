@@ -223,7 +223,7 @@ export function Game() {
         newProgress[levelNumber].best = moves
         newProgress[levelNumber].status = "complete"
         // Unlock the next 5 levels
-        for (let i = 1; i < Math.min(newProgress.length, levelNumber + 5); i++) {
+        for (let i = 1; i < Math.min(newProgress.length - levelNumber, 5); i++) {
           if (newProgress[levelNumber + i].status === "locked") {
             newProgress[levelNumber + i].status = "unlocked"
           }
