@@ -1,161 +1,36 @@
-import * as path from "path";
 import fs from 'fs';
+import {XMLParser} from "fast-xml-parser";
 
 const easy = fs.readFileSync('./Levels/levelsEasy.xml', 'utf-8');
-// const parser = new DOMParser()
-// const easyXML = parser.parseFromString(easy,"text/xml")
-console.log(easy);
 
-const easyLevel1 = [
-  [
-    {
-      color: "Color.none",
-      targetColor: "Color.blue",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-  ],
-  [
-    {
-      color: "Color.none",
-      targetColor: "Color.blue",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-  ],
-  [
-    {
-      color: "Color.none",
-      targetColor: "Color.blue",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.red",
-      targetColor: "Color.red",
-      modifier: "Modifier.circle",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-  ],
-  [
-    {
-      color: "Color.none",
-      targetColor: "Color.blue",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-  ],
-  [
-    {
-      color: "Color.blue",
-      targetColor: "Color.blue",
-      modifier: "Modifier.up",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-    {
-      color: "Color.none",
-      targetColor: "Color.red",
-      modifier: "Modifier.none",
-    },
-  ],
-];
+// @ts-ignore
+const easyLevels = [[]]
+const parser = new XMLParser({ignoreAttributes: false});
+const levelObj = parser.parse(easy);
 
-const json = JSON.stringify(easyLevel1);  // {"name":"John Smith"}
-console.log(json);
+
+type levelDataProps = {
+  '@_number': string,
+  '@_color': string
+  '@_modifier': string,
+}
+
+levelObj['levels']['level'].forEach((levelData: levelDataProps) => {
+  console.log(levelData)
+  const colours = levelData["@_color"].split("\n")
+  colours.forEach((line) => {
+    console.log(line.trim())
+  })
+})
+
+
+// Stringify, and remove double quotes
+const json = JSON.stringify(easyLevels);
 const unquoted = json.replace(/"+/g, '');
-console.log(unquoted);
 
-const easyString = `
-import { Color, Modifier } from "@/components/Square/Square";
+const easyString = `import { Color, Modifier } from "@/components/Square/Square";
 import {Level} from "@/components/Game/Game";
 
 export const easyLevels: Array<Level> = ${unquoted}`
 
 fs.writeFileSync('./levels/easy.ts', easyString)
-
-
-console.log(path.resolve(__dirname, ".."));
