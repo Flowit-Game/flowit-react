@@ -15,14 +15,22 @@
 }
 .modalContent {
   margin: auto;
-  max-width: 768px;
+  max-width: 500px;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  text-transform: uppercase;
 }
 
-.tick {
+.complete {
   background-image: url("../LevelPicker/images/tick.svg");
+  height: 3rem;
+  aspect-ratio: 1;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.locked {
+  background-image: url("../LevelPicker/images/lock.svg");
   height: 3rem;
   aspect-ratio: 1;
   background-repeat: no-repeat;

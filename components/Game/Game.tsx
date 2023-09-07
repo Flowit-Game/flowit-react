@@ -279,7 +279,8 @@ export function Game() {
 
   return (
     <>
-      {gameIsWon ? <MessageModal onClick={incrementLevelNumber}/> : null}
+      {gameIsWon ? <MessageModal onClick={incrementLevelNumber} message={"complete"}/> : null}
+      {levelProgress[levelNumber].status === "locked" ? <MessageModal onClick={undefined} message={"locked"}/> : null}
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <button onClick={decrementLevelNumber} className={styles.previous}></button>
