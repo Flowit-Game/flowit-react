@@ -2,18 +2,11 @@ import {createContext, useState} from 'react';
 
 import styles from "./index.module.css";
 import Head from "./head";
-import {easyLevel1} from "@/levels/easy/level-01";
-import {easyLevel2} from "@/levels/easy/level-02";
-import {easyLevel3} from "@/levels/easy/level-25";
 import {Game, Level} from "@/components/Game/Game";
 import {LevelPicker} from "@/components/LevelPicker/LevelPicker";
+import {easyLevels} from "@/levels/easy";
 
-
-export const levels: Array<Level> = [
-  easyLevel1,
-  easyLevel2,
-  easyLevel3,
-]
+export const levels: Array<Level> = easyLevels;
 
 type levelStatus = "unlocked" | "locked" | "complete"
 type levelProgressProps = {status: levelStatus, best: number | null }
