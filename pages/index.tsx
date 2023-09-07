@@ -11,11 +11,10 @@ export const levels: Array<Level> = easyLevels;
 type levelStatus = "unlocked" | "locked" | "complete"
 type levelProgressProps = {status: levelStatus, best: number | null }
 // TODO placeholder for now, load this from local storage and make it editable
-export const levelProgressDefault: Array<levelProgressProps> = [
-  {status: "complete", best: 5},
-  {status: "unlocked", best: null},
-  {status: "locked", best: null},
-]
+export const levelProgressDefault: Array<levelProgressProps> = []
+for (let i = 0; i < levels.length; i++) {
+  levelProgressDefault.push({status: i < 4 ? "unlocked" : "locked", best: null})
+}
 
 export const LevelContext = createContext({
   levelNumber: 0,
@@ -38,7 +37,7 @@ export default function Home() {
   function changeLevelProgress(progress: Array<levelProgressProps>) {
     setLevelProgress(() => progress);
   }
-
+  // TODO there is a bug with level 14, something to do will the fill check?
   return (
     <LevelContext.Provider
       value={{levelNumber, changeLevelNumber, setGameStarted, levelProgress, changeLevelProgress}}

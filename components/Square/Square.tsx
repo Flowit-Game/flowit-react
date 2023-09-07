@@ -16,10 +16,10 @@ export enum Modifier {
   right = "right",
   down = "down",
   left = "left",
-  rotateUp = "rotate-up",
-  rotateRight = "rotate-right",
-  rotateDown = "rotate-down",
-  rotateLeft = "rotate-left",
+  rotateUp = "rotateUp",
+  rotateRight = "rotateRight",
+  rotateDown = "rotateDown",
+  rotateLeft = "rotateLeft",
   circle = "circle",
   bomb = "bomb"
 }

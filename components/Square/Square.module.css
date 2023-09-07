@@ -33,20 +33,20 @@
     transform: rotate(270deg);
     -webkit-transform: rotate(270deg);
 }
-.rotate-up {
+.rotateUp {
     background-image: url('./images/rotate-arrow.svg');
 }
-.rotate-right {
+.rotateRight {
     background-image: url('./images/rotate-arrow.svg');
     transform: rotate(90deg);
     -webkit-transform: rotate(90deg);
 }
-.rotate-down {
+.rotateDown {
     background-image: url('./images/rotate-arrow.svg');
     transform: rotate(180deg);
     -webkit-transform: rotate(180deg);
 }
-.rotate-left {
+.rotateLeft {
     background-image: url('./images/rotate-arrow.svg');
     transform: rotate(270deg);
     -webkit-transform: rotate(270deg);
