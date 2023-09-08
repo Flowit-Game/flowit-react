@@ -1,8 +1,9 @@
 import {useContext, useEffect, useState} from "react";
 import {Color, Modifier, Square, SquareProps} from "../Square/Square";
 import styles from "./Game.module.css";
-import {LevelContext, levels, levelStatus} from "@/pages";
+import {LevelContext, levels} from "@/pages";
 import {MessageModal} from "@/components/MessageModal/MessageModal";
+import {levelStatus} from "@/levels/levelsUtils";
 
 export type Level = Array<Array<SquareProps>>;
 

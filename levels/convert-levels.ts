@@ -1,6 +1,6 @@
 import fs from "fs";
 import {XMLParser} from "fast-xml-parser";
-import {levelProgressProps} from "@/pages";
+import {levelProgressProps} from "@/levels/levelsUtils";
 
 type levelDataProps = {
   "@_number": string;
@@ -85,8 +85,7 @@ const modifierMapping = {
   const unquotedProgress = JSON.stringify(defaultLevelProgress).replace(/"+/g, "");
   const outputString = `import { Color, Modifier } from "@/components/Square/Square";
   import {Level} from "@/components/Game/Game";
-  import {levelProgressProps} from "@/pages";
-  enum levelStatus {unlocked = "unlocked",locked = "locked",complete = "complete"}
+  import {levelStatus, levelProgressProps} from "@/levels/levelsUtils";
   export const ${category}Levels: Array<Level> = ${unquotedLevels}
   export const ${category}DefaultProgress: Array<levelProgressProps> = ${unquotedProgress}`;
   fs.writeFileSync(`./levels/${category}.ts`, outputString);

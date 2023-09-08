@@ -8,14 +8,9 @@ import {EasyLevels, EasyDefaultProgress} from "@/levels/Easy";
 import {MediumLevels, MediumDefaultProgress} from "@/levels/Medium";
 import {HardLevels, HardDefaultProgress} from "@/levels/Hard";
 import {CommunityLevels, CommunityDefaultProgress} from "@/levels/Community";
+import {levelProgressProps} from "@/levels/levelsUtils";
 
-export enum levelStatus {
-  unlocked = "unlocked",
-  locked = "locked",
-  complete = "complete",
-}
 export const levels: Array<Level> = EasyLevels;
-export type levelProgressProps = {status: levelStatus, best: number | null }
 export const levelProgressDefault: Array<levelProgressProps> = EasyDefaultProgress
 
 // TODO
