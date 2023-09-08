@@ -42,7 +42,6 @@ export function Square(props: SquareProps) {
       onClick={props.onClick}
     >
       <div className={`${styles.modifier} ${styles[props.modifier]}`}/>
-      {/*{`${props.x} ${props.y}`}*/}
     </button>
   );
 }
