@@ -1,7 +1,7 @@
 import {useContext, useEffect, useState} from "react";
 import {Color, Modifier, Square, SquareProps} from "../Square/Square";
 import styles from "./Game.module.css";
-import {LevelContext, levels} from "@/pages";
+import {LevelContext, levels, levelStatus} from "@/pages";
 import {MessageModal} from "@/components/MessageModal/MessageModal";
 
 export type Level = Array<Array<SquareProps>>;
@@ -221,11 +221,11 @@ export function Game() {
       if (levelProgress[levelNumber].best === null || moves < levelProgress[levelNumber].best!) {
         const newProgress = [...levelProgress]
         newProgress[levelNumber].best = moves
-        newProgress[levelNumber].status = "complete"
+        newProgress[levelNumber].status = levelStatus.complete
         // Unlock the next 5 levels
-        for (let i = 1; i < Math.min(newProgress.length - levelNumber, 5); i++) {
-          if (newProgress[levelNumber + i].status === "locked") {
-            newProgress[levelNumber + i].status = "unlocked"
+        for (let i = 1; i < Math.min(newProgress.length - levelNumber, 6); i++) {
+          if (newProgress[levelNumber + i].status === levelStatus.locked) {
+            newProgress[levelNumber + i].status = levelStatus.unlocked
           }
         }
         changeLevelProgress(newProgress)

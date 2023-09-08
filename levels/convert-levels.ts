@@ -1,5 +1,6 @@
 import fs from "fs";
 import {XMLParser} from "fast-xml-parser";
+import {levelProgressProps} from "@/pages";
 
 type levelDataProps = {
   "@_number": string;
@@ -41,12 +42,15 @@ const modifierMapping = {
 ["Easy", "Medium", "Hard", "Community"].forEach((category) => {
   const XMLFile = fs.readFileSync(`./Levels/levels${category}.xml`, "utf-8");
   const levels: Array<Array<Array<levelSquareProps>>> = [];
+  const defaultLevelProgress: Array<levelProgressProps> = [];
   const parser = new XMLParser({ignoreAttributes: false});
   const levelObj = parser.parse(XMLFile);
 
   levelObj["levels"]["level"].forEach(
     (levelData: levelDataProps, levelNumber: number) => {
       levels.push([]);
+      //@ts-ignore
+      defaultLevelProgress.push({status: levelNumber < 5 ? "levelStatus.unlocked" : "levelStatus.locked", best: null})
       const colours = levelData["@_color"].split("\n");
       colours.forEach((line, lineNumber: number) => {
         levels[levelNumber].push([]);
@@ -78,8 +82,12 @@ const modifierMapping = {
 
   // Stringify, and remove double quotes
   const unquotedLevels = JSON.stringify(levels).replace(/"+/g, "");
+  const unquotedProgress = JSON.stringify(defaultLevelProgress).replace(/"+/g, "");
   const outputString = `import { Color, Modifier } from "@/components/Square/Square";
   import {Level} from "@/components/Game/Game";
-  export const ${category}Levels: Array<Level> = ${unquotedLevels}`;
+  import {levelProgressProps} from "@/pages";
+  enum levelStatus {unlocked = "unlocked",locked = "locked",complete = "complete"}
+  export const ${category}Levels: Array<Level> = ${unquotedLevels}
+  export const ${category}DefaultProgress: Array<levelProgressProps> = ${unquotedProgress}`;
   fs.writeFileSync(`./levels/${category}.ts`, outputString);
 })
