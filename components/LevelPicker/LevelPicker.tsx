@@ -1,10 +1,10 @@
 import {useContext} from "react";
-import {LevelContext, levels} from "@/pages";
+import {LevelContext, levels, screens} from "@/pages";
 import styles from "./LevelPicker.module.css"
 
 export function LevelPicker() {
 
-  const {changeLevelNumber, setGameStarted, levelProgress} = useContext(
+  const {changeLevelNumber, changeCurrentScreen, setGameStarted, levelProgress} = useContext(
     LevelContext
   );
   return (
@@ -15,6 +15,7 @@ export function LevelPicker() {
           onClick={() => {
             changeLevelNumber(index)
             setGameStarted(true)
+            changeCurrentScreen(screens.Game)
           }}
           className={styles.clickableArea}
         >

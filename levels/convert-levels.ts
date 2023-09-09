@@ -39,8 +39,8 @@ const modifierMapping = {
 };
 
 
-["Easy", "Medium", "Hard", "Community"].forEach((category) => {
-  const XMLFile = fs.readFileSync(`./Levels/levels${category}.xml`, "utf-8");
+["Easy", "Medium", "Hard", "Community"].forEach((levelPack) => {
+  const XMLFile = fs.readFileSync(`./Levels/levels${levelPack}.xml`, "utf-8");
   const levels: Array<Array<Array<levelSquareProps>>> = [];
   const defaultLevelProgress: Array<levelProgressProps> = [];
   const parser = new XMLParser({ignoreAttributes: false});
@@ -86,7 +86,7 @@ const modifierMapping = {
   const outputString = `import { Color, Modifier } from "@/components/Square/Square";
   import {Level} from "@/components/Game/Game";
   import {levelStatus, levelProgressProps} from "@/levels/levelsUtils";
-  export const ${category}Levels: Array<Level> = ${unquotedLevels}
-  export const ${category}DefaultProgress: Array<levelProgressProps> = ${unquotedProgress}`;
-  fs.writeFileSync(`./levels/${category}.ts`, outputString);
+  export const ${levelPack}Levels: Array<Level> = ${unquotedLevels}
+  export const ${levelPack}DefaultProgress: Array<levelProgressProps> = ${unquotedProgress}`;
+  fs.writeFileSync(`./levels/${levelPack}.ts`, outputString);
 })
