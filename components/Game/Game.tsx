@@ -204,7 +204,7 @@ const updateGame = function (x: number, y: number, gameState: Level) {
 
 
 export function Game() {
-  const {levelNumber, changeLevelNumber, levelProgress, setGameStarted, changeLevelProgress, pack, changeCurrentScreen} = useContext(
+  const {levelNumber, changeLevelNumber, levelProgress, changeLevelProgress, pack, changeCurrentScreen} = useContext(
     LevelContext
   );
   const [moves, setMoves] = useState(0);
@@ -245,7 +245,7 @@ export function Game() {
     // when the new game is loaded before gameIsWon is recalculated
     setGameIsWon(false)
     if (levelNumber + 1 === levels[pack].length) {
-      setGameStarted(false);
+      changeCurrentScreen(screens.SelectLevel)
     } else {
       changeLevelNumber(levelNumber + 1)
     }
@@ -254,7 +254,7 @@ export function Game() {
   function decrementLevelNumber() {
     setGameIsWon(false)
     if (levelNumber === 0) {
-      setGameStarted(false);
+      changeCurrentScreen(screens.SelectLevel)
     } else {
       changeLevelNumber(levelNumber - 1)
     }

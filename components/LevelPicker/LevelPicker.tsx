@@ -4,7 +4,7 @@ import styles from "./LevelPicker.module.css"
 
 export function LevelPicker() {
 
-  const {changeLevelNumber, changeCurrentScreen, setGameStarted, levelProgress, pack} = useContext(
+  const {changeLevelNumber, changeCurrentScreen, levelProgress, pack} = useContext(
     LevelContext
   );
   return (
@@ -18,7 +18,6 @@ export function LevelPicker() {
             key={index}
             onClick={() => {
               changeLevelNumber(index)
-              setGameStarted(true)
               changeCurrentScreen(screens.Game)
             }}
             className={styles.clickableArea}

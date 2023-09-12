@@ -57,7 +57,6 @@ export const LevelContext = createContext({
   levelNumber: 0,
   changeLevelNumber: (_level: number) => {},
   changeCurrentScreen: (_screen: screens) => {},
-  setGameStarted: (_start: boolean) => {},
   levelProgress: levelProgressDefault,
   changeLevelProgress: (_levelProgress: levelPackProgressProps) => {},
   pack: defaultPack,
@@ -67,7 +66,6 @@ export const LevelContext = createContext({
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState(screens.SelectPack)
   const [levelNumber, setLevelNumber] = useState(0);
-  const [gameStarted, setGameStarted] = useState(false)
   const [levelProgress, setLevelProgress] = useState(levelProgressDefault)
   const [pack, setPack] = useState(defaultPack)
 
@@ -94,7 +92,6 @@ export default function Home() {
         levelNumber,
         changeLevelNumber,
         changeCurrentScreen,
-        setGameStarted,
         levelProgress,
         changeLevelProgress,
         pack,
