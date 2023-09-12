@@ -8,7 +8,7 @@ import {EasyLevels, EasyDefaultProgress} from "@/levels/Easy";
 import {MediumLevels, MediumDefaultProgress} from "@/levels/Medium";
 import {HardLevels, HardDefaultProgress} from "@/levels/Hard";
 import {CommunityLevels, CommunityDefaultProgress} from "@/levels/Community";
-import {levelProgressProps} from "@/levels/levelsUtils";
+import {levelProgressProps, packChoices} from "@/levels/levelsUtils";
 import {SelectPack} from "@/components/SelectPack/SelectPack";
 
 export const enum screens {
@@ -17,8 +17,33 @@ export const enum screens {
   Game = "Game",
 }
 
-export const levels: Array<Level> = EasyLevels;
-export const levelProgressDefault: Array<levelProgressProps> = EasyDefaultProgress
+type levelsProps = {
+  "Easy": Array<Level>,
+  "Medium": Array<Level>,
+  "Hard": Array<Level>,
+  "Community": Array<Level>,
+}
+
+export const levels: levelsProps = {
+  "Easy": EasyLevels,
+  "Medium": MediumLevels,
+  "Hard": HardLevels,
+  "Community": CommunityLevels,
+}
+
+type levelPackProgressProps = {
+  "Easy": Array<levelProgressProps>,
+  "Medium": Array<levelProgressProps>,
+  "Hard": Array<levelProgressProps>,
+  "Community": Array<levelProgressProps>
+}
+
+export const levelProgressDefault: levelPackProgressProps = {
+  "Easy": EasyDefaultProgress,
+  "Medium": MediumDefaultProgress,
+  "Hard": HardDefaultProgress,
+  "Community": CommunityDefaultProgress,
+}
 
 // TODO
 //  Save to and load from local storage for progress
@@ -26,13 +51,17 @@ export const levelProgressDefault: Array<levelProgressProps> = EasyDefaultProgre
 //  Fix weird alignment in level selector where levels < 9 are one character
 //  Update game screen one square at a time so you get a nice flow, e.g. medium 47
 
+const defaultPack: packChoices = "Easy"
+
 export const LevelContext = createContext({
   levelNumber: 0,
   changeLevelNumber: (_level: number) => {},
   changeCurrentScreen: (_screen: screens) => {},
   setGameStarted: (_start: boolean) => {},
   levelProgress: levelProgressDefault,
-  changeLevelProgress: (_levelProgress: Array<levelProgressProps>) => {},
+  changeLevelProgress: (_levelProgress: levelPackProgressProps) => {},
+  pack: defaultPack,
+  changePack: (_pack: packChoices) => {},
 });
 
 export default function Home() {
@@ -40,18 +69,23 @@ export default function Home() {
   const [levelNumber, setLevelNumber] = useState(0);
   const [gameStarted, setGameStarted] = useState(false)
   const [levelProgress, setLevelProgress] = useState(levelProgressDefault)
+  const [pack, setPack] = useState(defaultPack)
 
 
   function changeLevelNumber(level: number) {
     setLevelNumber(() => level);
   }
 
-  function changeLevelProgress(progress: Array<levelProgressProps>) {
+  function changeLevelProgress(progress: levelPackProgressProps) {
     setLevelProgress(() => progress);
   }
 
   function changeCurrentScreen(screen: screens) {
     setCurrentScreen(() => screen)
+  }
+
+  function changePack(pack: packChoices) {
+    setPack(() => pack)
   }
 
   return (
@@ -62,7 +96,9 @@ export default function Home() {
         changeCurrentScreen,
         setGameStarted,
         levelProgress,
-        changeLevelProgress
+        changeLevelProgress,
+        pack,
+        changePack,
     }}
     >
       <Head/>

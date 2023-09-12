@@ -4,11 +4,6 @@ export enum levelStatus {
   complete = "complete",
 }
 
-export const enum levelPacks {
-  Easy = "Easy",
-  Medium = "Medium",
-  Hard = "Hard",
-  Community = "Community"
-}
+export type packChoices = "Easy" | "Medium" | "Hard" | "Community"
 
 export type levelProgressProps = {status: levelStatus, best: number | null }

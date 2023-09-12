@@ -1,7 +1,7 @@
 import {useContext, useEffect, useState} from "react";
 import {Color, Modifier, Square, SquareProps} from "../Square/Square";
 import styles from "./Game.module.css";
-import {LevelContext, levels} from "@/pages";
+import {LevelContext, levels, screens} from "@/pages";
 import {MessageModal} from "@/components/MessageModal/MessageModal";
 import {levelStatus} from "@/levels/levelsUtils";
 
@@ -204,11 +204,11 @@ const updateGame = function (x: number, y: number, gameState: Level) {
 
 
 export function Game() {
-  const {levelNumber, changeLevelNumber, levelProgress, setGameStarted, changeLevelProgress} = useContext(
+  const {levelNumber, changeLevelNumber, levelProgress, setGameStarted, changeLevelProgress, pack, changeCurrentScreen} = useContext(
     LevelContext
   );
   const [moves, setMoves] = useState(0);
-  const [game, setGame] = useState(loadLevel(levels[levelNumber]));
+  const [game, setGame] = useState(loadLevel(levels[pack][levelNumber]));
   const [gameIsWon, setGameIsWon] = useState(false);
 
   useEffect(() => {
@@ -219,14 +219,14 @@ export function Game() {
 
   useEffect(() => {
     if (gameIsWon) {
-      if (levelProgress[levelNumber].best === null || moves < levelProgress[levelNumber].best!) {
-        const newProgress = [...levelProgress]
-        newProgress[levelNumber].best = moves
-        newProgress[levelNumber].status = levelStatus.complete
+      if (levelProgress[pack][levelNumber].best === null || moves < levelProgress[pack][levelNumber].best!) {
+        const newProgress = structuredClone(levelProgress)
+        newProgress[pack][levelNumber].best = moves
+        newProgress[pack][levelNumber].status = levelStatus.complete
         // Unlock the next 5 levels
-        for (let i = 1; i < Math.min(newProgress.length - levelNumber, 6); i++) {
-          if (newProgress[levelNumber + i].status === levelStatus.locked) {
-            newProgress[levelNumber + i].status = levelStatus.unlocked
+        for (let i = 1; i < Math.min(newProgress[pack].length - levelNumber, 6); i++) {
+          if (newProgress[pack][levelNumber + i].status === levelStatus.locked) {
+            newProgress[pack][levelNumber + i].status = levelStatus.unlocked
           }
         }
         changeLevelProgress(newProgress)
@@ -236,7 +236,7 @@ export function Game() {
 
   function reset() {
     setGameIsWon(false)
-    setGame(loadLevel(levels[levelNumber]));
+    setGame(loadLevel(levels[pack][levelNumber]));
     setMoves(0);
   }
 
@@ -244,7 +244,7 @@ export function Game() {
     // Unset gameIsWon before changing level, so we don't accidentally mark the level as complete
     // when the new game is loaded before gameIsWon is recalculated
     setGameIsWon(false)
-    if (levelNumber + 1 === levels.length) {
+    if (levelNumber + 1 === levels[pack].length) {
       setGameStarted(false);
     } else {
       changeLevelNumber(levelNumber + 1)
@@ -281,16 +281,16 @@ export function Game() {
   return (
     <>
       {gameIsWon ? <MessageModal onClick={incrementLevelNumber} message={"complete"}/> : null}
-      {levelProgress[levelNumber].status === "locked" ? <MessageModal onClick={undefined} message={"locked"}/> : null}
+      {levelProgress[pack][levelNumber].status === "locked" ? <MessageModal onClick={undefined} message={"locked"}/> : null}
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <button onClick={decrementLevelNumber} className={styles.previous}></button>
           <button onClick={reset} className={styles.reset}></button>
           <div>
             <p>Current: {moves}</p>
-            <p>Best: {levelProgress[levelNumber].best}</p>
+            <p>Best: {levelProgress[pack][levelNumber].best}</p>
           </div>
-          <button onClick={() => setGameStarted(false)} className={styles.home}></button>
+          <button onClick={() => changeCurrentScreen(screens.SelectLevel)} className={styles.home}></button>
           <button onClick={incrementLevelNumber} className={styles.next}></button>
         </div>
       </div>
