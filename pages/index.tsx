@@ -1,4 +1,4 @@
-import {createContext, useState} from 'react';
+import {createContext, useEffect, useState} from 'react';
 
 import styles from "./index.module.css";
 import Head from "./head";
@@ -12,7 +12,7 @@ import {levelProgressProps, packChoices} from "@/levels/levelsUtils";
 import {SelectPack} from "@/components/SelectPack/SelectPack";
 
 export const enum screens {
-  SelectPack ="SelectPack",
+  SelectPack = "SelectPack",
   SelectLevel = "SelectLevel",
   Game = "Game",
 }
@@ -46,10 +46,11 @@ export const levelProgressDefault: levelPackProgressProps = {
 }
 
 // TODO
-//  Save to and load from local storage for progress
-//  Level pack selector
+//  Level pack selector styling
 //  Fix weird alignment in level selector where levels < 9 are one character
 //  Update game screen one square at a time so you get a nice flow, e.g. medium 47
+//  Jest tests
+//  Fix all the ts-ignore errors.
 
 const defaultPack: packChoices = "Easy"
 
@@ -64,10 +65,26 @@ export const LevelContext = createContext({
 });
 
 export default function Home() {
+  const [initialLoad, setInitialLoad] = useState(true)
   const [currentScreen, setCurrentScreen] = useState(screens.SelectPack)
   const [levelNumber, setLevelNumber] = useState(0);
   const [levelProgress, setLevelProgress] = useState(levelProgressDefault)
-  const [pack, setPack] = useState(defaultPack)
+  const [pack, setPack] = useState<packChoices>(defaultPack)
+
+  useEffect(() => {
+    // @ts-ignore
+    const progress = JSON.parse(localStorage.getItem('levelProgress'));
+    if (progress) {
+      setLevelProgress(progress);
+    }
+  }, []);
+
+  useEffect(() => {
+    if(!initialLoad){
+      localStorage.setItem('levelProgress', JSON.stringify(levelProgress));
+    }
+    setInitialLoad(false)
+  }, [levelProgress, initialLoad]);
 
 
   function changeLevelNumber(level: number) {
@@ -94,15 +111,16 @@ export default function Home() {
         changeCurrentScreen,
         levelProgress,
         changeLevelProgress,
+        // @ts-ignore
         pack,
         changePack,
-    }}
+      }}
     >
       <Head/>
       <main className={styles.main}>
-        { currentScreen === screens.SelectPack ? <SelectPack /> : null}
-        { currentScreen === screens.SelectLevel ? <LevelPicker/> : null}
-        { currentScreen === screens.Game ? <Game/> : null}
+        {currentScreen === screens.SelectPack ? <SelectPack/> : null}
+        {currentScreen === screens.SelectLevel ? <LevelPicker/> : null}
+        {currentScreen === screens.Game ? <Game/> : null}
       </main>
     </LevelContext.Provider>
   );
