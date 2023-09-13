@@ -232,7 +232,7 @@ export function Game() {
         changeLevelProgress(newProgress)
       }
     }
-  }, [gameIsWon, levelProgress, levelNumber, moves, changeLevelProgress]);
+  }, [gameIsWon, levelProgress, levelNumber, moves, changeLevelProgress, pack]);
 
   function reset() {
     setGameIsWon(false)
@@ -286,7 +286,7 @@ export function Game() {
         <div className={styles.headerContent}>
           <button onClick={decrementLevelNumber} className={styles.previous}></button>
           <button onClick={reset} className={styles.reset}></button>
-          <div>
+          <div className={styles.headerProgress}>
             <p>Current: {moves}</p>
             <p>Best: {levelProgress[pack][levelNumber].best}</p>
           </div>

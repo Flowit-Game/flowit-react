@@ -4,12 +4,11 @@
     flex-wrap: wrap;
     max-width: 768px;
     margin: auto;
-    justify-content: center;
+    justify-content: left;
 }
 .clickableArea {
     padding: 12px;
     margin: 3px;
-    flex-grow: 1;
 }
 .levelStatus {
     aspect-ratio: 1;
@@ -20,11 +19,12 @@
     background-size: contain;
 }
 .levelNumber {
-    padding-left: 1rem;
+    padding-left: 10px;
     float: left;
     height: 100%;
     display: flex;
     align-items:center;
+    width: 20px;
 }
 .complete {
     background-image: url('./images/tick.svg');

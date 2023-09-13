@@ -47,10 +47,12 @@ export const levelProgressDefault: levelPackProgressProps = {
 
 // TODO
 //  Level pack selector styling
-//  Fix weird alignment in level selector where levels < 9 are one character
 //  Update game screen one square at a time so you get a nice flow, e.g. medium 47
 //  Jest tests
 //  Fix all the ts-ignore errors.
+//  Make the convert levels script better either error gracefully when xml files
+//    are missing, or better, do a git clone.
+//  Favicon
 
 const defaultPack: packChoices = "Easy"
 

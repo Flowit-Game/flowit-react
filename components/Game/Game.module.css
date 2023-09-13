@@ -11,6 +11,9 @@
     height: 100%;
     max-width: 768px;
 }
+.headerProgress {
+    width: 120px;
+}
 .header button {
     aspect-ratio: 1;
     height: 50%;
