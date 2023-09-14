@@ -1,5 +1,6 @@
 import {useContext} from "react";
 import {LevelContext, screens} from "@/pages";
+import styles from "./SelectPack.module.css"
 
 export function SelectPack() {
 
@@ -7,31 +8,39 @@ export function SelectPack() {
     LevelContext
   );
   return (
-    <div>
+    <div className={styles.contentArea}>
       <h1>Select Pack</h1>
-      <button onClick={() => {
-        changeCurrentScreen(screens.SelectLevel)
-        changePack("Easy")
-      }}>Easy
-      </button>
+      <div className={styles.selector}>
+        <button onClick={() => {
+          changeCurrentScreen(screens.SelectLevel)
+          changePack("Easy")
+        }}>Easy
+        </button>
+      </div>
 
-      <button onClick={() => {
-        changeCurrentScreen(screens.SelectLevel)
-        changePack("Medium")
-      }}>Medium
-      </button>
+      <div className={styles.selector}>
+        <button onClick={() => {
+          changeCurrentScreen(screens.SelectLevel)
+          changePack("Medium")
+        }}>Medium
+        </button>
+      </div>
 
-      <button onClick={() => {
-        changeCurrentScreen(screens.SelectLevel)
-        changePack("Hard")
-      }}>Hard
-      </button>
+      <div className={styles.selector}>
+        <button onClick={() => {
+          changeCurrentScreen(screens.SelectLevel)
+          changePack("Hard")
+        }}>Hard
+        </button>
+      </div>
 
-      <button onClick={() => {
-        changeCurrentScreen(screens.SelectLevel)
-        changePack("Community")
-      }}>Community
-      </button>
+      <div className={styles.selector}>
+        <button onClick={() => {
+          changeCurrentScreen(screens.SelectLevel)
+          changePack("Community")
+        }}>Community
+        </button>
+      </div>
     </div>
   );
 }

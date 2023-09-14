@@ -1,9 +1,30 @@
-.pickerArea {
+.contentArea {
+    margin: auto;
+    max-width: 768px;
     padding: 2rem;
+}
+.contentArea button {
+    background-color: cornflowerblue;
+    width: 80%;
+    max-width: 400px;
+    font-size: 20px;
+    height: 50px;
+    border: none;
+    margin-left: 49px;
+}
+
+.selector:before {
+    content:'';
+    position: absolute;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 25px solid transparent;
+    border-right: 25px solid cornflowerblue;
+}
+
+.pickerArea {
     display: flex;
     flex-wrap: wrap;
-    max-width: 768px;
-    margin: auto;
     justify-content: left;
 }
 .clickableArea {

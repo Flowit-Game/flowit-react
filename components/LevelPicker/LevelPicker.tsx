@@ -8,10 +8,11 @@ export function LevelPicker() {
     LevelContext
   );
   return (
-    <>
-      <div>
-        <button onClick={() => changeCurrentScreen(screens.SelectPack)}>Select Pack</button>
+    <div className={styles.contentArea}>
+      <div className={styles.selector}>
+        <button onClick={() => changeCurrentScreen(screens.SelectPack)}>{pack}</button>
       </div>
+      <h1>Select Level</h1>
       <div className={styles.pickerArea}>
         {levels[pack].map((_level, index) => (
           <div
@@ -27,6 +28,6 @@ export function LevelPicker() {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }

@@ -46,7 +46,6 @@ export const levelProgressDefault: levelPackProgressProps = {
 }
 
 // TODO
-//  Level pack selector styling
 //  Update game screen one square at a time so you get a nice flow, e.g. medium 47
 //  Jest tests
 //  Fix all the ts-ignore errors.
