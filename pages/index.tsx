@@ -52,6 +52,9 @@ export const levelProgressDefault: levelPackProgressProps = {
 //  Make the convert levels script better either error gracefully when xml files
 //    are missing, or better, do a git clone.
 //  Favicon
+//  Handle back button (move from game back to level select)
+//  Scrip publishing to GitHub pages
+
 
 const defaultPack: packChoices = "Easy"
 
