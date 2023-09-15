@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import {Color, Modifier, Square, SquareProps} from "../Square/Square";
 import styles from "./Game.module.css";
 import {LevelContext, levels, screens} from "@/pages";
@@ -211,11 +211,16 @@ export function Game() {
   const [game, setGame] = useState(loadLevel(levels[pack][levelNumber]));
   const [gameIsWon, setGameIsWon] = useState(false);
 
+  const handleReset = useCallback(() => {
+    setGameIsWon(false)
+    setGame(loadLevel(levels[pack][levelNumber]));
+    setMoves(0);
+  }, [pack, levelNumber])
+
   useEffect(() => {
     // Reset the game every time the level changes
-    reset()
-    //TODO fix? or just ignore?
-  }, [levelNumber]);
+    handleReset()
+  }, [levelNumber, handleReset]);
 
   useEffect(() => {
     if (gameIsWon) {
@@ -233,12 +238,6 @@ export function Game() {
       }
     }
   }, [gameIsWon, levelProgress, levelNumber, moves, changeLevelProgress, pack]);
-
-  function reset() {
-    setGameIsWon(false)
-    setGame(loadLevel(levels[pack][levelNumber]));
-    setMoves(0);
-  }
 
   function incrementLevelNumber() {
     // Unset gameIsWon before changing level, so we don't accidentally mark the level as complete
@@ -285,7 +284,7 @@ export function Game() {
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <button onClick={decrementLevelNumber} className={styles.previous}></button>
-          <button onClick={reset} className={styles.reset}></button>
+          <button onClick={handleReset} className={styles.reset}></button>
           <div className={styles.headerProgress}>
             <p>Current: {moves}</p>
             <p>Best: {levelProgress[pack][levelNumber].best}</p>
