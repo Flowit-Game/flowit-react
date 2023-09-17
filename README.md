@@ -42,8 +42,3 @@ cd out
 docker run --rm -p 3001:80 -v $PWD:/usr/share/nginx/html nginx
 ```
 And then browse to [http://localhost:3001](http://localhost:3001)
-
-
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-=======
-
