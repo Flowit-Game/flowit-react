@@ -1,11 +1,11 @@
 # Flowit-react
-A clone of [Flowit](https://github.com/Flowit-Game/Flowit) using typescript / react / nextjs.
+A clone of [Flowit](https://github.com/Flowit-Game/Flowit) using typescript / react / nextjs that can be played at [https://flowit-game.github.io/flowit-react/](https://flowit-game.github.io/flowit-react/)
 
 # Licensing
 Is licenced as AGPL-3.0.
 
 ## Getting Started
-First, install the node modules:
+To build flowit-react locally, first, install the node modules:
 ```bash
 yarn
 ```
