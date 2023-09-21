@@ -1,7 +1,7 @@
 import {createContext, useEffect, useState} from 'react';
 
 import styles from "./index.module.css";
-import Head from "./head";
+import Header from "./header";
 import {Game, Level} from "@/components/Game/Game";
 import {LevelPicker} from "@/components/LevelPicker/LevelPicker";
 import {EasyLevels, EasyDefaultProgress} from "@/levels/Easy";
@@ -49,11 +49,7 @@ export const levelProgressDefault: levelPackProgressProps = {
 //  Update game screen one square at a time so you get a nice flow, e.g. medium 47
 //  Jest tests
 //  Fix all the ts-ignore errors.
-//  Make the convert levels script better either error gracefully when xml files
-//    are missing, or better, do a git clone.
-//  Favicon
 //  Handle back button (move from game back to level select)
-//  Scrip publishing to GitHub pages
 
 
 const defaultPack: packChoices = "Easy"
@@ -120,7 +116,7 @@ export default function Home() {
         changePack,
       }}
     >
-      <Head/>
+      <Header/>
       <main className={styles.main}>
         {currentScreen === screens.SelectPack ? <SelectPack/> : null}
         {currentScreen === screens.SelectLevel ? <LevelPicker/> : null}
