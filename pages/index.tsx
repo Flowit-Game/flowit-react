@@ -47,9 +47,9 @@ export const levelProgressDefault: levelPackProgressProps = {
 
 // TODO
 //  Update game screen one square at a time so you get a nice flow, e.g. medium 47
-//  Jest tests
 //  Fix all the ts-ignore errors.
 //  Handle back button (move from game back to level select)
+//  Alternate color schemes for accessibility
 
 
 const defaultPack: packChoices = "Easy"

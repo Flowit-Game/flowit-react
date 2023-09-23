@@ -1,46 +1,28 @@
 import {useContext} from "react";
 import {LevelContext, screens} from "@/pages";
 import styles from "./SelectPack.module.css"
+import {packChoices} from "@/levels/levelsUtils";
 
 export function SelectPack() {
 
   const {changeCurrentScreen, changePack} = useContext(
     LevelContext
   );
+  const packs: Array<packChoices> = ["Easy", "Medium", "Hard", "Community"]
   return (
     <div className={styles.contentArea}>
       <h1>Select Pack</h1>
-      <div className={styles.selector}>
-        <button onClick={() => {
-          changeCurrentScreen(screens.SelectLevel)
-          changePack("Easy")
-        }}>Easy
-        </button>
-      </div>
-
-      <div className={styles.selector}>
-        <button onClick={() => {
-          changeCurrentScreen(screens.SelectLevel)
-          changePack("Medium")
-        }}>Medium
-        </button>
-      </div>
-
-      <div className={styles.selector}>
-        <button onClick={() => {
-          changeCurrentScreen(screens.SelectLevel)
-          changePack("Hard")
-        }}>Hard
-        </button>
-      </div>
-
-      <div className={styles.selector}>
-        <button onClick={() => {
-          changeCurrentScreen(screens.SelectLevel)
-          changePack("Community")
-        }}>Community
-        </button>
-      </div>
+      {packs.map((packName, index) => (
+        <div className={styles.selector} key={index}>
+          <button
+            data-testid={`${packName}-pack-button`}
+            onClick={() => {
+            changeCurrentScreen(screens.SelectLevel)
+            changePack(packName)
+          }}>{packName}
+          </button>
+        </div>
+      ))}
     </div>
   );
 }
