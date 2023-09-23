@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watch",
+    "test": "jest",
     "convert-levels": "ts-node -O '{\"module\": \"commonjs\"}' ./levels/convert-levels.ts"
   },
   "dependencies": {
