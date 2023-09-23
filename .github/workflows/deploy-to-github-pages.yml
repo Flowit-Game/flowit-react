@@ -1,4 +1,4 @@
-# Publish Flowit react to githup pages.
+# Deploy Flowit react to githup pages.
 # Based on workflow from https://github.com/actions/starter-workflows/blob/main/pages/nextjs.yml
 
 name: Deploy flowit-react to Pages

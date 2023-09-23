@@ -37,6 +37,7 @@ export type SquareProps = {
 export function Square(props: SquareProps) {
   return (
     <button
+      data-testid={`square-${props.x}-${props.y}`}
       className={styles.square}
       style={{ backgroundColor: props.color, borderColor: props.targetColor }}
       onClick={props.onClick}
