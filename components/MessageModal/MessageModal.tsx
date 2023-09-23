@@ -22,7 +22,7 @@ export function MessageModal(props: MessageModalProps) {
     </div>
   }
   return (
-    <div className={styles.modal}>
+    <div className={styles.modal} data-testid="message-modal">
       <div className={styles.modalBanner} onClick={props.onClick}>
         <div className={styles.modalContent}>
           <div className={styles[props.message]}></div>
