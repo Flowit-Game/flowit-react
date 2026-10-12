@@ -24,7 +24,7 @@ export function LevelPicker() {
             }}
             className={styles.clickableArea}
           >
-            <div className={`${styles.levelStatus} ${styles[getLevelStatus(levels[pack], index, levelProgress)]}`}></div>
+            <div className={`${styles.levelStatus} ${styles[getLevelStatus(levels[pack], index, levelProgress)] ?? ""}`}></div>
             <div className={styles.levelNumber}>{index + 1}</div>
           </div>
         ))}

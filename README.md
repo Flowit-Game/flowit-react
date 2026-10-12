@@ -26,10 +26,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Ensure the `levels-source` submodule is checked out (`git submodule update --init`). Then run
 ```bash
 yarn next build
-yarn next export
 ```
 
-This will create an `out` directory with static files that can be hosted (e.g. On GitHub pages or Amazon S3) to create the site.
+This will create an `out` directory with static files that can be hosted (e.g. On GitHub pages or Amazon S3) to create the site. Run `yarn start` for a quick preview.
 
 If you have docker available and want a quick preview of the site, you can run
 ```bash

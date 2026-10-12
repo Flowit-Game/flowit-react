@@ -71,27 +71,16 @@ export const LevelContext = createContext({
 });
 
 export default function Home({levels}: {levels: levelsProps}) {
-  const [initialLoad, setInitialLoad] = useState(true)
   const [currentScreen, setCurrentScreen] = useState(screens.SelectPack)
   const [levelNumber, setLevelNumber] = useState(0);
   const [levelProgress, setLevelProgress] = useState<progressProps>({})
   const [pack, setPack] = useState<packChoices>(defaultPack)
 
   useEffect(() => {
+    // localStorage is only available after hydration of the static page
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLevelProgress(readStoredProgress(levels));
   }, [levels]);
-
-  useEffect(() => {
-    if(!initialLoad){
-      try {
-        localStorage.setItem(progressStorageKey, JSON.stringify(levelProgress));
-      } catch (error) {
-        console.error(`Could not save level progress: ${error}`)
-      }
-    }
-    setInitialLoad(false)
-  }, [levelProgress, initialLoad]);
-
 
   function changeLevelNumber(level: number) {
     setLevelNumber(() => level);
@@ -99,6 +88,11 @@ export default function Home({levels}: {levels: levelsProps}) {
 
   function changeLevelProgress(progress: progressProps) {
     setLevelProgress(() => progress);
+    try {
+      localStorage.setItem(progressStorageKey, JSON.stringify(progress));
+    } catch (error) {
+      console.error(`Could not save level progress: ${error}`)
+    }
   }
 
   function changeCurrentScreen(screen: screens) {
@@ -127,7 +121,7 @@ export default function Home({levels}: {levels: levelsProps}) {
       <main className={styles.main}>
         {currentScreen === screens.SelectPack ? <SelectPack/> : null}
         {currentScreen === screens.SelectLevel ? <LevelPicker/> : null}
-        {currentScreen === screens.Game ? <Game/> : null}
+        {currentScreen === screens.Game ? <Game key={levels[pack][levelNumber].id}/> : null}
       </main>
     </LevelContext.Provider>
   );

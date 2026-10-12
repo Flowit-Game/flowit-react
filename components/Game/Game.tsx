@@ -4,12 +4,14 @@ import styles from "./Game.module.css";
 import {LevelContext, screens} from "@/pages";
 import {MessageModal} from "@/components/MessageModal/MessageModal";
 import {getLevelStatus, levelStatus} from "@/levels/levelsUtils";
+import {parseLevel} from "@/levels/parseLevel";
 
 export type Level = Array<Array<SquareProps>>;
 
 export type LevelData = {
   id: number;
-  board: Level;
+  color: Array<string>;
+  modifier: Array<string>;
 };
 
 type Coordinate = {
@@ -213,20 +215,15 @@ export function Game() {
     LevelContext
   );
   const [moves, setMoves] = useState(0);
-  const [game, setGame] = useState(loadLevel(levels[pack][levelNumber].board));
+  const [game, setGame] = useState(() => loadLevel(parseLevel(levels[pack][levelNumber])));
   const [gameIsWon, setGameIsWon] = useState(false);
   const levelId = levels[pack][levelNumber].id;
 
   const handleReset = useCallback(() => {
     setGameIsWon(false)
-    setGame(loadLevel(levels[pack][levelNumber].board));
+    setGame(loadLevel(parseLevel(levels[pack][levelNumber])));
     setMoves(0);
   }, [levels, pack, levelNumber])
-
-  useEffect(() => {
-    // Reset the game every time the level changes
-    handleReset()
-  }, [levelNumber, handleReset]);
 
   useEffect(() => {
     if (gameIsWon) {
