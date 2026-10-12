@@ -3,9 +3,14 @@ import {Color, Modifier, Square, SquareProps} from "../Square/Square";
 import styles from "./Game.module.css";
 import {LevelContext, levels, screens} from "@/pages";
 import {MessageModal} from "@/components/MessageModal/MessageModal";
-import {levelStatus} from "@/levels/levelsUtils";
+import {getLevelStatus, levelStatus} from "@/levels/levelsUtils";
 
 export type Level = Array<Array<SquareProps>>;
+
+export type LevelData = {
+  id: number;
+  board: Level;
+};
 
 type Coordinate = {
   x: number;
@@ -208,12 +213,13 @@ export function Game() {
     LevelContext
   );
   const [moves, setMoves] = useState(0);
-  const [game, setGame] = useState(loadLevel(levels[pack][levelNumber]));
+  const [game, setGame] = useState(loadLevel(levels[pack][levelNumber].board));
   const [gameIsWon, setGameIsWon] = useState(false);
+  const levelId = levels[pack][levelNumber].id;
 
   const handleReset = useCallback(() => {
     setGameIsWon(false)
-    setGame(loadLevel(levels[pack][levelNumber]));
+    setGame(loadLevel(levels[pack][levelNumber].board));
     setMoves(0);
   }, [pack, levelNumber])
 
@@ -224,20 +230,13 @@ export function Game() {
 
   useEffect(() => {
     if (gameIsWon) {
-      if (levelProgress[pack][levelNumber].best === null || moves < levelProgress[pack][levelNumber].best!) {
-        const newProgress = structuredClone(levelProgress)
-        newProgress[pack][levelNumber].best = moves
-        newProgress[pack][levelNumber].status = levelStatus.complete
-        // Unlock the next 5 levels
-        for (let i = 1; i < Math.min(newProgress[pack].length - levelNumber, 6); i++) {
-          if (newProgress[pack][levelNumber + i].status === levelStatus.locked) {
-            newProgress[pack][levelNumber + i].status = levelStatus.unlocked
-          }
-        }
-        changeLevelProgress(newProgress)
+      const best = levelProgress[levelId]?.best
+      if (best === undefined || moves < best) {
+        // Completing a level also unlocks the next 5, see getLevelStatus
+        changeLevelProgress({...levelProgress, [levelId]: {best: moves}})
       }
     }
-  }, [gameIsWon, levelProgress, levelNumber, moves, changeLevelProgress, pack]);
+  }, [gameIsWon, levelProgress, levelId, moves, changeLevelProgress]);
 
   function incrementLevelNumber() {
     // Unset gameIsWon before changing level, so we don't accidentally mark the level as complete
@@ -280,14 +279,14 @@ export function Game() {
   return (
     <>
       {gameIsWon ? <MessageModal onClick={incrementLevelNumber} message={"complete"}/> : null}
-      {levelProgress[pack][levelNumber].status === "locked" ? <MessageModal onClick={undefined} message={"locked"}/> : null}
+      {getLevelStatus(levels[pack], levelNumber, levelProgress) === levelStatus.locked ? <MessageModal onClick={undefined} message={"locked"}/> : null}
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <button onClick={decrementLevelNumber} className={styles.previous}></button>
           <button onClick={handleReset} className={styles.reset}></button>
           <div className={styles.headerProgress}>
             <p>Current: {moves}</p>
-            <p>Best: {levelProgress[pack][levelNumber].best}</p>
+            <p>Best: {levelProgress[levelId]?.best}</p>
           </div>
           <button onClick={() => changeCurrentScreen(screens.SelectLevel)} className={styles.home}></button>
           <button onClick={incrementLevelNumber} className={styles.next}></button>

@@ -1,6 +1,5 @@
 import fs from "fs";
 import {XMLParser} from "fast-xml-parser";
-import {levelProgressProps} from "@/levels/levelsUtils";
 
 type levelDataProps = {
   "@_number": string;
@@ -39,23 +38,28 @@ const modifierMapping = {
 };
 
 
+// Level numbers are unique across all packs and are used as level IDs to store progress
+const seenLevelIds = new Set<number>();
+
 ["Easy", "Medium", "Hard", "Community"].forEach((levelPack) => {
   const XMLFile = fs.readFileSync(`./Levels/levels${levelPack}.xml`, "utf-8");
-  const levels: Array<Array<Array<levelSquareProps>>> = [];
-  const defaultLevelProgress: Array<levelProgressProps> = [];
+  const levels: Array<{id: number, board: Array<Array<levelSquareProps>>}> = [];
   const parser = new XMLParser({ignoreAttributes: false});
   const levelObj = parser.parse(XMLFile);
 
   levelObj["levels"]["level"].forEach(
     (levelData: levelDataProps, levelNumber: number) => {
-      levels.push([]);
-      //@ts-ignore
-      defaultLevelProgress.push({status: levelNumber < 5 ? "levelStatus.unlocked" : "levelStatus.locked", best: null})
+      const id = Number(levelData["@_number"]);
+      if (!Number.isInteger(id) || seenLevelIds.has(id)) {
+        throw new Error(`Missing or duplicate level number "${levelData["@_number"]}" in ${levelPack} pack`);
+      }
+      seenLevelIds.add(id);
+      levels.push({id, board: []});
       const colours = levelData["@_color"].split("\n");
       colours.forEach((line, lineNumber: number) => {
-        levels[levelNumber].push([]);
+        levels[levelNumber].board.push([]);
         Array.from(line.trim()).forEach((color) => {
-          levels[levelNumber][lineNumber].push({
+          levels[levelNumber].board[lineNumber].push({
             //@ts-ignore
             targetColor: colorMapping[color] || "Color.none",
           });
@@ -68,12 +72,12 @@ const modifierMapping = {
           const mod = modifierMapping[modifier] || "Modifier.none";
           //@ts-ignore
           const color = colorMapping[modifier] || "Color.none"
-          levels[levelNumber][lineNumber][squareNumber].modifier = mod;
+          levels[levelNumber].board[lineNumber][squareNumber].modifier = mod;
           if (mod !== "Modifier.none") {
-            levels[levelNumber][lineNumber][squareNumber].color =
-              levels[levelNumber][lineNumber][squareNumber].targetColor;
+            levels[levelNumber].board[lineNumber][squareNumber].color =
+              levels[levelNumber].board[lineNumber][squareNumber].targetColor;
           } else {
-            levels[levelNumber][lineNumber][squareNumber].color = color
+            levels[levelNumber].board[lineNumber][squareNumber].color = color
           }
         });
       });
@@ -82,11 +86,8 @@ const modifierMapping = {
 
   // Stringify, and remove double quotes
   const unquotedLevels = JSON.stringify(levels).replace(/"+/g, "");
-  const unquotedProgress = JSON.stringify(defaultLevelProgress).replace(/"+/g, "");
   const outputString = `import { Color, Modifier } from "@/components/Square/Square";
-  import {Level} from "@/components/Game/Game";
-  import {levelStatus, levelProgressProps} from "@/levels/levelsUtils";
-  export const ${levelPack}Levels: Array<Level> = ${unquotedLevels}
-  export const ${levelPack}DefaultProgress: Array<levelProgressProps> = ${unquotedProgress}`;
+  import {LevelData} from "@/components/Game/Game";
+  export const ${levelPack}Levels: Array<LevelData> = ${unquotedLevels}`;
   fs.writeFileSync(`./levels/${levelPack}.ts`, outputString);
 })

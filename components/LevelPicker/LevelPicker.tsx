@@ -1,6 +1,7 @@
 import {useContext} from "react";
 import {LevelContext, levels, screens} from "@/pages";
 import styles from "./LevelPicker.module.css"
+import {getLevelStatus} from "@/levels/levelsUtils";
 
 export function LevelPicker() {
 
@@ -23,7 +24,7 @@ export function LevelPicker() {
             }}
             className={styles.clickableArea}
           >
-            <div className={`${styles.levelStatus} ${styles[levelProgress[pack][index].status]}`}></div>
+            <div className={`${styles.levelStatus} ${styles[getLevelStatus(levels[pack], index, levelProgress)]}`}></div>
             <div className={styles.levelNumber}>{index + 1}</div>
           </div>
         ))}
