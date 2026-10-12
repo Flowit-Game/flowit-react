@@ -1,3 +1,4 @@
+import type {LevelData} from "@/components/Game/Game";
 
 export enum levelStatus {
   unlocked = "unlocked",
@@ -6,6 +7,8 @@ export enum levelStatus {
 }
 
 export type packChoices = "Easy" | "Medium" | "Hard" | "Community"
+
+export type levelsProps = Record<packChoices, Array<LevelData>>
 
 export type levelProgressProps = {best: number}
 

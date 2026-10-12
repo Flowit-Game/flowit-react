@@ -1,7 +1,7 @@
 import {useCallback, useContext, useEffect, useState} from "react";
 import {Color, Modifier, Square, SquareProps} from "../Square/Square";
 import styles from "./Game.module.css";
-import {LevelContext, levels, screens} from "@/pages";
+import {LevelContext, screens} from "@/pages";
 import {MessageModal} from "@/components/MessageModal/MessageModal";
 import {getLevelStatus, levelStatus} from "@/levels/levelsUtils";
 
@@ -209,7 +209,7 @@ const updateGame = function (x: number, y: number, gameState: Level) {
 
 
 export function Game() {
-  const {levelNumber, changeLevelNumber, levelProgress, changeLevelProgress, pack, changeCurrentScreen} = useContext(
+  const {levels, levelNumber, changeLevelNumber, levelProgress, changeLevelProgress, pack, changeCurrentScreen} = useContext(
     LevelContext
   );
   const [moves, setMoves] = useState(0);
@@ -221,7 +221,7 @@ export function Game() {
     setGameIsWon(false)
     setGame(loadLevel(levels[pack][levelNumber].board));
     setMoves(0);
-  }, [pack, levelNumber])
+  }, [levels, pack, levelNumber])
 
   useEffect(() => {
     // Reset the game every time the level changes

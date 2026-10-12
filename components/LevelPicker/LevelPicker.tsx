@@ -1,11 +1,11 @@
 import {useContext} from "react";
-import {LevelContext, levels, screens} from "@/pages";
+import {LevelContext, screens} from "@/pages";
 import styles from "./LevelPicker.module.css"
 import {getLevelStatus} from "@/levels/levelsUtils";
 
 export function LevelPicker() {
 
-  const {changeLevelNumber, changeCurrentScreen, levelProgress, pack} = useContext(
+  const {levels, changeLevelNumber, changeCurrentScreen, levelProgress, pack} = useContext(
     LevelContext
   );
   return (

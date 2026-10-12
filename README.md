@@ -10,14 +10,9 @@ To build flowit-react locally, first, install the node modules:
 yarn
 ```
 
-Next clone the levels repository
+Next fetch the [levels repository](https://github.com/Flowit-Game/Levels), which is a submodule in `levels-source` (or clone with `--recurse-submodules`)
 ```bash
-git clone https://github.com/Flowit-Game/Levels.git
-```
-
-Then convert the levels to the expected format
-```bash
-yarn convert-levels
+git submodule update --init
 ```
 
 Now you can run the development server:
@@ -28,7 +23,7 @@ yarn dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Building a release
-Ensure you have downloaded and converted the levels. Then run 
+Ensure the `levels-source` submodule is checked out (`git submodule update --init`). Then run
 ```bash
 yarn next build
 yarn next export
@@ -42,3 +37,10 @@ cd out
 docker run --rm -p 3001:80 -v $PWD:/usr/share/nginx/html nginx
 ```
 And then browse to [http://localhost:3001](http://localhost:3001)
+
+## Updating the levels
+The levels are pinned to a commit of the submodule. To pull in new levels, run
+```bash
+git submodule update --remote levels-source
+```
+and commit the updated `levels-source`.

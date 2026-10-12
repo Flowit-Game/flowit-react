@@ -2,13 +2,10 @@ import {createContext, useEffect, useState} from 'react';
 
 import styles from "./index.module.css";
 import Header from "./header";
-import {Game, LevelData} from "@/components/Game/Game";
+import {Game} from "@/components/Game/Game";
 import {LevelPicker} from "@/components/LevelPicker/LevelPicker";
-import {EasyLevels} from "@/levels/Easy";
-import {MediumLevels} from "@/levels/Medium";
-import {HardLevels} from "@/levels/Hard";
-import {CommunityLevels} from "@/levels/Community";
-import {levelStatus, packChoices, progressProps} from "@/levels/levelsUtils";
+import {loadLevels} from "@/levels/loadLevels";
+import {levelsProps, levelStatus, packChoices, progressProps} from "@/levels/levelsUtils";
 import {SelectPack} from "@/components/SelectPack/SelectPack";
 
 export const enum screens {
@@ -17,25 +14,15 @@ export const enum screens {
   Game = "Game",
 }
 
-type levelsProps = {
-  "Easy": Array<LevelData>,
-  "Medium": Array<LevelData>,
-  "Hard": Array<LevelData>,
-  "Community": Array<LevelData>,
-}
-
-export const levels: levelsProps = {
-  "Easy": EasyLevels,
-  "Medium": MediumLevels,
-  "Hard": HardLevels,
-  "Community": CommunityLevels,
+export async function getStaticProps() {
+  return {props: {levels: loadLevels()}}
 }
 
 const progressStorageKey = "levelProgressById"
 // Older versions stored progress per pack, indexed by level position
 const legacyProgressStorageKey = "levelProgress"
 
-function readStoredProgress(): progressProps {
+function readStoredProgress(levels: levelsProps): progressProps {
   try {
     const stored = JSON.parse(localStorage.getItem(progressStorageKey) ?? "null")
     if (stored && typeof stored === "object") {
@@ -73,6 +60,7 @@ function readStoredProgress(): progressProps {
 const defaultPack: packChoices = "Easy"
 
 export const LevelContext = createContext({
+  levels: {"Easy": [], "Medium": [], "Hard": [], "Community": []} as levelsProps,
   levelNumber: 0,
   changeLevelNumber: (_level: number) => {},
   changeCurrentScreen: (_screen: screens) => {},
@@ -82,7 +70,7 @@ export const LevelContext = createContext({
   changePack: (_pack: packChoices) => {},
 });
 
-export default function Home() {
+export default function Home({levels}: {levels: levelsProps}) {
   const [initialLoad, setInitialLoad] = useState(true)
   const [currentScreen, setCurrentScreen] = useState(screens.SelectPack)
   const [levelNumber, setLevelNumber] = useState(0);
@@ -90,8 +78,8 @@ export default function Home() {
   const [pack, setPack] = useState<packChoices>(defaultPack)
 
   useEffect(() => {
-    setLevelProgress(readStoredProgress());
-  }, []);
+    setLevelProgress(readStoredProgress(levels));
+  }, [levels]);
 
   useEffect(() => {
     if(!initialLoad){
@@ -124,6 +112,7 @@ export default function Home() {
   return (
     <LevelContext.Provider
       value={{
+        levels,
         levelNumber,
         changeLevelNumber,
         changeCurrentScreen,

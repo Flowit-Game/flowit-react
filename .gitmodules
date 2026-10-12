@@ -1,0 +1,3 @@
+[submodule "levels-source"]
+	path = levels-source
+	url = https://github.com/Flowit-Game/Levels.git
