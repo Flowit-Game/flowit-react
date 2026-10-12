@@ -14,6 +14,9 @@
 .headerProgress {
     width: 145px;
 }
+.headerProgress p {
+    margin: 0.4em 0;
+}
 .header button {
     aspect-ratio: 1;
     height: 50%;
@@ -32,7 +35,7 @@
   }
 .gameBoard {
     width: 100%;
-    max-width: 768px;
+    max-width: 500px;
 }
 .row {
     display: flex;

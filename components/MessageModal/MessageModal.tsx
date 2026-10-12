@@ -23,7 +23,7 @@ export function MessageModal(props: MessageModalProps) {
   }
   return (
     <div className={styles.modal}>
-      <div className={styles.modalBanner} onClick={props.onClick}>
+      <div className={`${styles.modalBanner} ${props.onClick ? styles.clickable : ""}`} onClick={props.onClick}>
         <div className={styles.modalContent}>
           <div className={styles[props.message]}></div>
           {text}

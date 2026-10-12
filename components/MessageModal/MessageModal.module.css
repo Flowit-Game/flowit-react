@@ -13,6 +13,9 @@
   margin-top: 9rem;
   color: #FFFFFF;
 }
+.clickable {
+  cursor: pointer;
+}
 .modalContent {
   margin: auto;
   max-width: 500px;

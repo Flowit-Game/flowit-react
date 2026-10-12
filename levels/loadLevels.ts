@@ -10,6 +10,7 @@ type levelDataProps = {
   "@_number": string;
   "@_color": string;
   "@_modifier": string;
+  "@_solution"?: string;
 };
 
 const toLines = (attribute: string) => attribute.split("\n").map((line) => line.trim()).filter((line) => line);
@@ -26,7 +27,13 @@ function loadPack(levelPack: packChoices, seenLevelIds: Set<number>): Array<Leve
       throw new Error(`Missing or duplicate level number "${levelData["@_number"]}" in ${levelPack} pack`);
     }
     seenLevelIds.add(id);
-    return {id, color: toLines(levelData["@_color"]), modifier: toLines(levelData["@_modifier"])};
+    const solution = levelData["@_solution"]?.split(/[\s,]+/).filter((move) => move);
+    return {
+      id,
+      color: toLines(levelData["@_color"]),
+      modifier: toLines(levelData["@_modifier"]),
+      optimalMoves: solution?.length ? solution.length : null,
+    };
   });
 }
 

@@ -5,6 +5,10 @@ body {
     font-family: 'good-times', serif;
 }
 
+button {
+    cursor: pointer;
+}
+
 @font-face {
   font-family: 'good-times';
   font-style: normal;

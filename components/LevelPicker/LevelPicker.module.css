@@ -30,6 +30,7 @@
 .clickableArea {
     padding: 12px;
     margin: 3px;
+    cursor: pointer;
 }
 .levelStatus {
     aspect-ratio: 1;

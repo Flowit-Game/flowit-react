@@ -12,6 +12,7 @@ export type LevelData = {
   id: number;
   color: Array<string>;
   modifier: Array<string>;
+  optimalMoves: number | null;
 };
 
 type Coordinate = {
@@ -217,7 +218,7 @@ export function Game() {
   const [moves, setMoves] = useState(0);
   const [game, setGame] = useState(() => loadLevel(parseLevel(levels[pack][levelNumber])));
   const [gameIsWon, setGameIsWon] = useState(false);
-  const levelId = levels[pack][levelNumber].id;
+  const {id: levelId, optimalMoves} = levels[pack][levelNumber];
 
   const handleReset = useCallback(() => {
     setGameIsWon(false)
@@ -284,6 +285,7 @@ export function Game() {
           <div className={styles.headerProgress}>
             <p>Current: {moves}</p>
             <p>Best: {levelProgress[levelId]?.best}</p>
+            {optimalMoves !== null ? <p>Optimal: {optimalMoves}</p> : null}
           </div>
           <button onClick={() => changeCurrentScreen(screens.SelectLevel)} className={styles.home}></button>
           <button onClick={incrementLevelNumber} className={styles.next}></button>
