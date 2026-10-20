@@ -109,6 +109,7 @@ const updateGame = function (x: number, y: number, gameState: Level) {
     const arrowColour = freshGameState[x][y].color;
     const targetColor = nextSquare?.color == arrowColour ? Color.none : arrowColour;
     const replaceColour = nextSquare?.color == arrowColour ? arrowColour : Color.none;
+    let step = 0;
     try {
       while (
         // The next square exists on the grid
@@ -120,6 +121,7 @@ const updateGame = function (x: number, y: number, gameState: Level) {
       // and it's either empty, and we are adding colors
       nextSquare.color === replaceColour) {
         freshGameState[nextSquare.x!][nextSquare.y!].color = targetColor
+        freshGameState[nextSquare.x!][nextSquare.y!].delay = step++
         nextSquare = getNextSquare(
           nextSquare.x!,
           nextSquare.y!,
@@ -161,13 +163,14 @@ const updateGame = function (x: number, y: number, gameState: Level) {
         if (square !== undefined && square.targetColor !== Color.none) {
           freshGameState[square.x!][square.y!].color = targetColor
           freshGameState[square.x!][square.y!].modifier = Modifier.none
+          freshGameState[square.x!][square.y!].delay = square.x === x && square.y === y ? 0 : 1
         }
       });
     } catch (error) {
       console.error(`${error}`);
     }
   } else if (freshGameState[x][y].modifier === Modifier.circle) {
-    const queue: Array<Coordinate> = [{x: x, y: y}];
+    const queue: Array<Coordinate & { step: number }> = [{x: x, y: y, step: 0}];
     const visited: Array<Coordinate> = [];
     // If any neighbour is empty, but has a target color
     const fill = (
@@ -183,7 +186,7 @@ const updateGame = function (x: number, y: number, gameState: Level) {
     const targetColor = fill ? freshGameState[x][y].color : Color.none;
     const replaceColour = fill ? Color.none : freshGameState[x][y].color;
     while (queue.length) {
-      const current = queue.pop()!;
+      const current = queue.shift()!;
       // Check the 4 neighbour and add them to the queue
       [Modifier.up, Modifier.right, Modifier.down, Modifier.left].forEach(
         (neighbour) => {
@@ -196,12 +199,13 @@ const updateGame = function (x: number, y: number, gameState: Level) {
             !includesCoordinate(visited, nextSquare.x!, nextSquare.y!) &&
             !includesCoordinate(queue, nextSquare.x!, nextSquare.y!)
           ) {
-            queue.push({x: nextSquare.x!, y: nextSquare.y!});
+            queue.push({x: nextSquare.x!, y: nextSquare.y!, step: current.step + 1});
           }
         }
       );
       if (freshGameState[current.x][current.y].modifier === Modifier.none) {
         freshGameState[current.x][current.y].color = targetColor
+        freshGameState[current.x][current.y].delay = current.step - 1
       }
       visited.push({x: current.x, y: current.y})
     }
@@ -295,8 +299,8 @@ export function Game() {
         <div className={styles.gameBoard}>
           {game.map((row, index) => (
             <div key={index} className={styles.row}>
-              {row.map((square) => (
-                <Square key={square.key} {...square} />
+              {row.map(({key, ...square}) => (
+                <Square key={key} {...square} />
               ))}
             </div>
           ))}

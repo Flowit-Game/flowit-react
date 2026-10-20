@@ -31,6 +31,7 @@ export type SquareProps = {
   modifier: Modifier;
   x?: number;
   y?: number;
+  delay?: number;
   onClick?: MouseEventHandler;
 };
 
@@ -38,7 +39,7 @@ export function Square(props: SquareProps) {
   return (
     <button
       className={styles.square}
-      style={{ backgroundColor: props.color, borderColor: props.targetColor }}
+      style={{ backgroundColor: props.color, borderColor: props.targetColor, transitionDelay: `${(props.delay ?? 0) * 30}ms` }}
       onClick={props.onClick}
     >
       <div className={`${styles.modifier} ${styles[props.modifier]}`}/>
