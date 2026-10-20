@@ -51,6 +51,9 @@
 .complete {
     background-image: url('./images/tick.svg');
 }
+.optimal {
+    background-image: url('./images/tick-star.svg');
+}
 .unlocked {
     /* blank */
 }
